@@ -44,8 +44,11 @@
       };
     in
     {
-      homeConfigurations."${username}" = mkHomeConfig {
+      homeConfigurations."${username}@arm" = mkHomeConfig {
         system = "aarch64-linux";
+      };
+      homeConfigurations."${username}@x86_64" = mkHomeConfig {
+        system = "x86_64-linux";
       };
     };
 }
