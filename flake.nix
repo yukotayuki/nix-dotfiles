@@ -7,6 +7,11 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    darwin = {
+      url = "github:lnl7/nix-darwin/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... }@inputs: with inputs;
@@ -37,8 +42,25 @@
             home = {
               inherit username;
               homeDirectory = getHomeDirectory args.system;
-              stateVersion = "22.05";
+              # stateVersion = "22.05";
             };
+          }
+        ];
+      };
+
+      mkDarwinConfig = args: darwin.lib.darwinSystem {
+        inherit (args) system;
+        specialArgs = {
+          inherit (args) machine;
+        };
+        modules = [
+          ./darwin-configuration.nix
+          # home-managerとの連携
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users."${username}" = import ./home.nix;
           }
         ];
       };
@@ -49,6 +71,11 @@
       };
       homeConfigurations."${username}@x86_64" = mkHomeConfig {
         system = "x86_64-linux";
+      };
+
+      darwinConfigurations."${username}-mbp" = mkDarwinConfig {
+        system = "aarch64-darwin";
+        machine = "joo-mbp";
       };
     };
 }
