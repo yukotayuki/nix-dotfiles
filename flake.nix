@@ -48,6 +48,12 @@
         ];
       };
 
+      mkNixOSConfig = args: nixpkgs.lib.nixosSystem {
+        modules = [
+          ./configuration.nix
+        ];
+      };
+
       mkDarwinConfig = args: darwin.lib.darwinSystem {
         inherit (args) system;
         specialArgs = {
@@ -72,6 +78,8 @@
       homeConfigurations."${username}@x86_64" = mkHomeConfig {
         system = "x86_64-linux";
       };
+
+      nixosConfigurations."${username}" = mkNixOSConfig;
 
       darwinConfigurations."${username}-mbp" = mkDarwinConfig {
         system = "aarch64-darwin";
