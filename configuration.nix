@@ -9,14 +9,14 @@
   ];
 
   nix = {
-    packages = pkgs.nixUnstable;
+    #packages = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
-    ''
+    '';
   };
 
   boot = {
-    systemd-boot.enable = true;
+    loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     loader.efi.efiSysMountPoint = "/boot/efi";
 
@@ -80,7 +80,7 @@
   };
 
   services.xserver = {
-    enalbe = true;
+    enable = true;
 
     displayManager = {
       lightdm.enable = true;
@@ -106,8 +106,6 @@
     pulse.enable = true;
     jack.enable = true;
   };
-
-  nixpkgs.config.allowUnfree = true;
 
   #services.openssh = {
   #  enable = true;
