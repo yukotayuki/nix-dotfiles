@@ -40,6 +40,20 @@ in
 
   programs.vim = {
     enable = true;
+    extraConfig = ''
+      set rtp^=${dotDir}/.config/nvim
+      set rtp+=${dotDir}/.config/nvim/after
+      source ${dotDir}/.config/nvim/init.vim
+    '';
+  };
+
+  programs.neovim = {
+    enable = true;
+    extraConfig = ''
+      set rtp^=${dotDir}/.config/nvim
+      set rtp+=${dotDir}/.config/nvim/after
+      source ${dotDir}/.config/nvim/init.vim
+    '';
   };
 
   programs.direnv = {
