@@ -2,6 +2,8 @@
 
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  repoDir = "~/work/repositories";
+  dotDir = "${repoDir}/github.com/yukotayuki/nix-dotfiles";
 
 in
 {
@@ -32,7 +34,7 @@ in
     ignores = [ ".envrc" ".DS_Store" ];
     extraConfig = {
       ghq = {
-        root = "~/work/repositories";
+        root = "${repoDir}";
       };
     };
   };
@@ -47,5 +49,12 @@ in
 
   programs.zsh = {
     enable = true;
+  };
+
+  programs.tmux = {
+    enable = true;
+    extraConfig = ''
+      source ${dotDir}/tmux_custom.conf
+    '';
   };
 }
