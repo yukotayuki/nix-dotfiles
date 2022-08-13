@@ -52,6 +52,12 @@
         inherit (args) system;
         modules = [
           ./configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users."${username}" = import ./home.nix;
+          }
         ];
       };
 
@@ -62,7 +68,6 @@
         };
         modules = [
           ./darwin-configuration.nix
-          # home-managerとの連携
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
