@@ -48,6 +48,10 @@ in
 
   programs.zsh = {
     enable = true;
+    initExtra = ''
+      source ${dotDir}/.zshrc
+    '';
+    enableCompletion = false;
   };
 
   programs.tmux = {
