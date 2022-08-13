@@ -1,0 +1,24 @@
+{
+    "svelte.plugin.typescript.diagnostics.enable": true,
+    "coc.preferences.formatOnSaveFiletypes": [
+        "svelte",
+        "typescript",
+        "json",
+        "css",
+        "html",
+        "javascript"
+    ],
+    "eslint.format.enable": false,
+    "eslint.run": "onType",
+    "eslint.autoFixOnSave": false,
+    "json.enable": true,
+    "json.format.enable": true,
+    "languageserver": {
+        "nim": {
+            "command": "nimlsp",
+            "filetypes": [
+                "nim"
+            ]
+        }
+    }
+}
