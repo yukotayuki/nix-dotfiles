@@ -9,9 +9,15 @@ in
 {
   home.stateVersion = "22.05";
   home.packages = with pkgs; [
-    jq
-    htop
+    ghq
+    ripgrep
+    asdf-vm
+    peco
   ] ++ lib.lists.optionals isLinux [
+    gnumake
+    autokey
+    lshw
+    pciutils
   ] ++ lib.lists.optionals isDarwin [
   ];
 
@@ -23,6 +29,18 @@ in
   };
 
   programs.home-manager = {
+    enable = true;
+  };
+
+  programs.bat = {
+    enable = true;
+  };
+
+  programs.htop = {
+    enable = true;
+  };
+
+  programs.jq = {
     enable = true;
   };
 

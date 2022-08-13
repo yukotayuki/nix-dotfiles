@@ -45,13 +45,7 @@
       firefox
       microsoft-edge
       skypeforlinux
-      autokey
-      ghq
       nix-index
-      nodenv
-      htop
-      lshw
-      pciutils
     ];
   };
 
@@ -107,10 +101,10 @@
     jack.enable = true;
   };
 
-  #services.openssh = {
-  #  enable = true;
-  #  passwordAuthentication = true;
-  #};
+  # services.openssh = {
+  #   enable = true;
+  #   passwordAuthentication = true;
+  # };
 
   programs.nm-applet.enable = true;
   
