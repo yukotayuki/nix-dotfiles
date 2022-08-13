@@ -113,15 +113,7 @@
   #};
 
   programs.nm-applet.enable = true;
-  programs.git = {
-    enable = true;
-    config = {
-      ghq = {
-        root = "~/work/repositories";
-      };
-    };
-  };
-
+  
   services.udev = {
     extraHwdb = ''
       evdev:atkbd:dmi:*
