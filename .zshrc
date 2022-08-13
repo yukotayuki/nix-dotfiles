@@ -16,7 +16,9 @@ zinit light-mode for \
     zdharma-continuum/z-a-patch-dl \
     zdharma-continuum/z-a-bin-gem-node
 
-export ZHOMEDIR="$HOME/.config/zsh"
+export REPODIR="$HOME/work/repositories"
+export DOTDIR="$REPODIR/github.com/yukotayuki/nix-dotfiles"
+export ZHOMEDIR="$DOTDIR/.config/zsh"
 source $ZHOMEDIR/zinit_plugins.zsh
 source $ZHOMEDIR/configs/aliases.zsh
 source $ZHOMEDIR/configs/setopt.zsh
