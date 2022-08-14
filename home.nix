@@ -13,6 +13,8 @@ in
     ripgrep
     asdf-vm
     peco
+    wget
+    curl 
   ] ++ lib.lists.optionals isLinux [
     gnumake
     autokey

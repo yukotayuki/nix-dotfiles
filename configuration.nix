@@ -40,6 +40,7 @@
 
   users.users.joo = {
     isNormalUser = true;
+    shell = "/etc/profiles/per-user/joo/bin/zsh";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       firefox
@@ -50,11 +51,11 @@
   };
 
   environment.systemPackages = with pkgs; [
-    htop
-    vim
-    wget curl xfce.xfce4-whiskermenu-plugin
-    xfce.xfce4-pulseaudio-plugin pavucontrol
-    plata-theme arc-icon-theme
+    xfce.xfce4-whiskermenu-plugin
+    xfce.xfce4-pulseaudio-plugin
+    pavucontrol
+    plata-theme
+    arc-icon-theme
   ];
 
   fonts = {
@@ -101,10 +102,10 @@
     jack.enable = true;
   };
 
-  # services.openssh = {
-  #   enable = true;
-  #   passwordAuthentication = true;
-  # };
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = true;
+  };
 
   programs.nm-applet.enable = true;
   
