@@ -15,11 +15,16 @@ in
     peco
     wget
     curl 
+    unzip
   ] ++ lib.lists.optionals isLinux [
     gnumake
     autokey
     lshw
     pciutils
+    yubikey-manager
+    # anbox
+    genymotion
+    discord
   ] ++ lib.lists.optionals isDarwin [
   ];
 
