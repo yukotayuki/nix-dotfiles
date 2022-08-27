@@ -4,8 +4,12 @@
 #
 ###################################################
 
-alias ls="ls -G"
-#alias ls="lsd"
+if [[ $DISTRI == 'nixos' ]]; then
+    alias ls="ls --color"
+    # alias ls="lsd"
+else
+    alias ls="ls -G"
+fi
 alias l='ls'
 #alias vim='nvim'
 alias ll='ls -l'
