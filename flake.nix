@@ -61,6 +61,19 @@
         ];
       };
 
+      mkNixOSGaming = args: nixpkgs.lib.nixosSystem {
+        inherit (args) system;
+        modules = [
+          ./host/gaming/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users."${username}" = import ./home.nix;
+          }
+        ];
+      };
+
       mkDarwinConfig = args: darwin.lib.darwinSystem {
         inherit (args) system;
         specialArgs = {
@@ -86,6 +99,10 @@
       };
 
       nixosConfigurations."${username}" = mkNixOSConfig {
+        system = "x86_64-linux";
+      };
+
+      nixosConfigurations."${username}@gaming" = mkNixOSGaming {
         system = "x86_64-linux";
       };
 
