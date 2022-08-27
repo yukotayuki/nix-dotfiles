@@ -16,6 +16,7 @@ zinit light-mode for \
     zdharma-continuum/z-a-patch-dl \
     zdharma-continuum/z-a-bin-gem-node
 
+export DISTRI=$(. /etc/lsb-release; echo $DISTRIB_ID)
 export REPODIR="$HOME/work/repositories"
 export DOTDIR="$REPODIR/github.com/yukotayuki/nix-dotfiles"
 export ZHOMEDIR="$DOTDIR/.config/zsh"
@@ -31,3 +32,4 @@ export VIMLSP="vim-lsp"
 # export VIMLSP="coc"
 
 setopt magic_equal_subst
+
