@@ -11,29 +11,36 @@ in
   home.packages = with pkgs; [
     ghq
     ripgrep
-    asdf-vm
     peco
     wget
     curl 
     unzip
+    (nerdfonts.override { fonts = [ "Noto" ]; })
   ] ++ lib.lists.optionals isLinux [
+    gcc
     gnumake
+    binutils
+    file
     autokey
     lshw
     pciutils
     yubikey-manager
-    # anbox
-    genymotion
     discord
   ] ++ lib.lists.optionals isDarwin [
+    asdf-vm
   ];
 
-  nix = {
-    package = pkgs.nixUnstable;
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-    };
-  };
+  # nix = {
+  #   package = pkgs.nixUnstable;
+  #   settings = {
+  #     experimental-features = [ "nix-command" "flakes" ];
+  #   };
+  # };
+
+  xdg.configFile."nix/nix.conf".source = ./nix.conf;
+  xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
+
+  fonts.fontconfig.enable = true;
 
   programs.home-manager = {
     enable = true;
