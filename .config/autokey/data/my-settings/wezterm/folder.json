@@ -1,0 +1,23 @@
+{
+    "type": "folder",
+    "title": "wezterm",
+    "modes": [],
+    "usageCount": 0,
+    "showInTrayMenu": false,
+    "abbreviation": {
+        "abbreviations": [],
+        "backspace": true,
+        "ignoreCase": false,
+        "immediate": false,
+        "triggerInside": false,
+        "wordChars": "[\\w]"
+    },
+    "hotkey": {
+        "modifiers": [],
+        "hotKey": null
+    },
+    "filter": {
+        "regex": "org.wezfurlong.wezterm.org.wezfurlong.wezterm",
+        "isRecursive": true
+    }
+}

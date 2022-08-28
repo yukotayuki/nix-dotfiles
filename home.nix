@@ -2,7 +2,7 @@
 
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  repoDir = "~/work/repositories";
+  repoDir = "${config.home.homeDirectory}/work/repositories";
   dotDir = "${repoDir}/github.com/yukotayuki/nix-dotfiles";
 
 in
@@ -39,6 +39,7 @@ in
 
   xdg.configFile."nix/nix.conf".source = ./nix.conf;
   xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
+  xdg.configFile."autokey".source = config.lib.file.mkOutOfStoreSymlink "${dotDir}/.config/autokey";
 
   fonts.fontconfig.enable = true;
 

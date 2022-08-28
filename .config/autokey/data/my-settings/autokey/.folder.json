@@ -1,0 +1,23 @@
+{
+    "type": "folder",
+    "title": "autokey",
+    "modes": [],
+    "usageCount": 0,
+    "showInTrayMenu": false,
+    "abbreviation": {
+        "abbreviations": [],
+        "backspace": true,
+        "ignoreCase": false,
+        "immediate": false,
+        "triggerInside": false,
+        "wordChars": "[\\w]"
+    },
+    "hotkey": {
+        "modifiers": [],
+        "hotKey": null
+    },
+    "filter": {
+        "regex": ".autokey-gtk-wrapped..autokey-gtk-wrapped",
+        "isRecursive": true
+    }
+}
