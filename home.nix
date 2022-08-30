@@ -40,6 +40,7 @@ in
   xdg.configFile."nix/nix.conf".source = ./nix.conf;
   xdg.configFile."nixpkgs/config.nix".source = ./nixpkgs-config.nix;
   xdg.configFile."autokey".source = config.lib.file.mkOutOfStoreSymlink "${dotDir}/.config/autokey";
+  xdg.configFile."autostart/autokey.desktop".source = config.lib.file.mkOutOfStoreSymlink "${dotDir}/.config/autostart/autokey.desktop";
 
   fonts.fontconfig.enable = true;
 
