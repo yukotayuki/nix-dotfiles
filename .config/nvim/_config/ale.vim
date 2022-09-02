@@ -1,6 +1,6 @@
 let g:ale_linters = {}
 let g:ale_linters['javascript'] = ['eslint']
-let g:ale_linters['python'] = ['flake8']
+let g:ale_linters['python'] = ['flake8', 'mypy']
 let g:ale_lint_delay = 200
 let g:ale_lint_on_enter = 1
 let g:ale_linters_on_text_changed = 1
