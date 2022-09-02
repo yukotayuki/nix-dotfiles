@@ -91,20 +91,20 @@
       };
     in
     {
-      homeConfigurations."${username}@arm" = mkHomeConfig {
-        system = "aarch64-linux";
+      homeConfigurations = {
+        "hm-darwin@arm" = mkHomeConfig {
+          system = "aarch64-darwin";
+        };
+        hm-darwin = mkHomeConfig {
+          system = "x86_64-darwin";
+        };
+        "hm-linux@arm" = mkHomeConfig {
+          system = "aarch64-linux";
+        };
+        hm-linux = mkHomeConfig {
+          system = "x86_64-linux";
+        };
       };
-      homeConfigurations."${username}@x86_64" = mkHomeConfig {
-        system = "x86_64-linux";
-      };
-
-      # nixosConfigurations."${username}" = mkNixOSConfig {
-      #   system = "x86_64-linux";
-      # };
-      # 
-      # nixosConfigurations."${username}@gaming" = mkNixOSGaming {
-      #   system = "x86_64-linux";
-      # };
 
       nixosConfigurations = {
         nix-laptop = mkNixOSConfig {
