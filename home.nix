@@ -26,6 +26,7 @@ in
     pciutils
     yubikey-manager
     discord
+    xclip
   ] ++ lib.lists.optionals isDarwin [
     asdf-vm
   ];

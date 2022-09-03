@@ -38,6 +38,7 @@ set softtabstop=4
 let &colorcolumn="80,".join(range(81,999),",")
 
 if has('clipboard')
+  set clipboard=unnamedplus
   set clipboard+=unnamed
 endif
 
