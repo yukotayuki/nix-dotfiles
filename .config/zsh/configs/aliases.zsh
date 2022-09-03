@@ -11,7 +11,7 @@ else
     alias ls="ls -G"
 fi
 alias l='ls'
-alias vim='nvim'
+# alias vim='nvim'
 alias ll='ls -l'
 alias la='ls -a'
 
