@@ -96,6 +96,9 @@ in
     initExtra = ''
       source ${dotDir}/.zshrc
     '';
+    envExtra = ''
+      source ${dotDir}/.zshenv
+    '';
     enableCompletion = false;
   };
 

@@ -1,6 +1,6 @@
 zstyle :compinstall filename "$HOME/.zshrc"
 
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' matcher-list 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}'
 zstyle ':completion:*' ignore-parents parent pwd ..
 zstyle ':completion:*:default' menu select=1
 # End of lines added by compinstall
