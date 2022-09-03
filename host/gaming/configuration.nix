@@ -53,6 +53,10 @@
     ];
   };
 
+  environment.sessionVariables = {
+    GTK_USE_PORTAL = "1";
+  };
+
   environment.systemPackages = with pkgs; [
     xfce.xfce4-whiskermenu-plugin
     xfce.xfce4-pulseaudio-plugin
@@ -138,6 +142,17 @@
   # for yubioath-desktop
   services.udev.packages = with pkgs; [yubikey-personalization];
   services.pcscd.enable = true;
+
+  # flatpak
+  services.flatpak.enable = true;
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-gtk
+    ];
+    # gtkUsePortal = true;
+  };
 
   programs.steam = {
     enable = true;

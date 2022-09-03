@@ -33,5 +33,8 @@ source $ZHOMEDIR/configs/anyenv.zsh
 export VIMLSP="vim-lsp"
 # export VIMLSP="coc"
 
+# flatpak for nixos
+source /run/current-system/sw/etc/profile.d/flatpak.sh
+
 setopt magic_equal_subst
 
