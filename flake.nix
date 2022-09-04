@@ -48,31 +48,20 @@
         ];
       };
 
-      mkNixOSConfig = args: nixpkgs.lib.nixosSystem {
-        inherit (args) system;
+      mkNixOSConfig = { system ? "x86_64-linux" , extraModules }:
+      nixpkgs.lib.nixosSystem {
+        inherit system;
+
         modules = [
-          args.configuration
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users."${username}" = import ./home.nix;
           }
-        ];
+        ] ++ extraModules;
       };
 
-      # mkNixOSGaming = args: nixpkgs.lib.nixosSystem {
-      #   inherit (args) system;
-      #   modules = [
-      #     ./host/gaming/configuration.nix
-      #     home-manager.nixosModules.home-manager
-      #     {
-      #       home-manager.useGlobalPkgs = true;
-      #       home-manager.useUserPackages = true;
-      #       home-manager.users."${username}" = import ./home.nix;
-      #     }
-      #   ];
-      # };
 
       mkDarwinConfig = args: darwin.lib.darwinSystem {
         inherit (args) system;
@@ -108,12 +97,14 @@
 
       nixosConfigurations = {
         nix-laptop = mkNixOSConfig {
-          system = "x86_64-linux";
-          configuration = ./host/laptop/configuration.nix;
+          extraModules = [
+            ./hosts/laptop/configuration.nix
+          ];
         };
         nix-gaming = mkNixOSConfig {
-          system = "x86_64-linux";
-          configuration = ./host/gaming/configuration.nix;
+          extraModules = [
+            ./hosts/gaming/configuration.nix
+          ];
         };
       };
 
