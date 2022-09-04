@@ -7,7 +7,13 @@ let
 
 in
 {
-  home.stateVersion = "22.05";
+  hoem = {
+    stateVersion = "22.05";
+    sessionVariables = {
+      EDITOR = "nvim";
+    };
+  };
+
   home.packages = with pkgs; [
     ghq
     ripgrep
@@ -29,6 +35,7 @@ in
     xclip
   ] ++ lib.lists.optionals isDarwin [
     asdf-vm
+    reattach-to-user-namespace
   ];
 
   xdg.configFile = {

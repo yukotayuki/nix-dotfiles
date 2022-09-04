@@ -16,17 +16,7 @@
 
   outputs = { self, ... }@inputs: with inputs;
     let
-      #username = builtins.getEnv "USER";
       username = "joo";
-
-      # # system - argument
-      # getHomeDirectory = system: with nixpkgs.legacyPackages.${system}.stdenv;
-      # if isDarwin then
-      #   "/Users/${username}"
-      # else if isLinux then
-      #   "/home/${username}"
-      #   #"/${username}"
-      # else "";
 
       mkHomeConfig = 
       let
@@ -34,31 +24,17 @@
           if pkgs.stdenv.hostPlatform.isDarwin then "/Users" else "/home";
       in
       { system ? "x86_64-linux"
-      , pkgs ? (self.lib.pkgsForSystem {
-        inherit sytem; 
-        config = {
-          allowUnfree = true;
-          allowUnsupportedSystem = true;
-        };
-      })
+      , pkgs ? (import nixpkgs { inherit system; })
       , homeDirectory ? "${homeDirectoryPrefix pkgs}/${username}"
       }:
       home-manager.lib.homeManagerConfiguration {
-        # pkgs = import nixpkgs {
-        #   inherit system;
-        #   config = {
-        #     allowUnfree = true;
-        #     allowUnsupportedSystem = true;
-        #   };
-        # };
+        inherit pkgs;
         modules = [
           ./home.nix
           {
             home = {
               inherit username;
               inherit homeDirectory;
-              # homeDirectory = getHomeDirectory args.system;
-              # stateVersion = "22.05";
             };
           }
         ];
