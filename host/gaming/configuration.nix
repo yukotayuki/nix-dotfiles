@@ -20,11 +20,15 @@
   ];
 
   boot = {
-    loader.grub.enable = true;
-    loader.grub.version = 2;
-    loader.grub.efiSupport = true;
-    loader.grub.efiInstallAsRemovable = true;
-    loader.grub.device = "nodev";
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    loader.efi.efiSysMountPoint = "/boot/efi";
+
+    # loader.grub.enable = true;
+    # loader.grub.version = 2;
+    # loader.grub.efiSupport = true;
+    # loader.grub.efiInstallAsRemovable = true;
+    # loader.grub.device = "nodev";
   };
 
   networking = {
