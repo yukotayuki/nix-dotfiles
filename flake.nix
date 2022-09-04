@@ -62,21 +62,20 @@
         ] ++ extraModules;
       };
 
-
-      mkDarwinConfig = args: darwin.lib.darwinSystem {
-        inherit (args) system;
-        specialArgs = {
-          inherit (args) machine;
-        };
+      mkDarwinConfig = { system ? "x86_64-darwin", extraModules }:
+      darwin.lib.darwinSystem {
+        inherit system;
+        # specialArgs = {
+        #   inherit machine;
+        # };
         modules = [
-          ./darwin-configuration.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users."${username}" = import ./home.nix;
           }
-        ];
+        ] ++ extraModules;
       };
     in
     {
@@ -108,9 +107,13 @@
         };
       };
 
-      darwinConfigurations."${username}-mbp" = mkDarwinConfig {
-        system = "aarch64-darwin";
-        machine = "joo-mbp";
+      darwinConfigurations = {
+        "darwin@arm" = mkDarwinConfig {
+          system = "aarch64-darwin";
+          extraModules = [
+            ./hosts/macos/darwin-configuration.nix
+          ];
+        };
       };
     };
 }
