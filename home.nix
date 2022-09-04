@@ -69,6 +69,19 @@ in
     };
   };
 
+  programs.lazygit = {
+    enable = true;
+    settings = {
+      gui = {
+        language = "ja";
+        showIcons = true;
+      };
+      os = {
+        editCommand = "vim";
+      };
+    };
+  };
+
   programs.vim = {
     enable = true;
     extraConfig = ''
