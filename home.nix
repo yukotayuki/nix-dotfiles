@@ -1,9 +1,7 @@
-args@{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  repoDir = "${config.home.homeDirectory}/work/repositories";
-  dotDir = "${repoDir}/github.com/yukotayuki/nix-dotfiles";
 
 in
 {
@@ -14,19 +12,8 @@ in
     };
   };
 
-  _module.args.repoDir = repoDir;
-  _module.args.dotDir = dotDir;
   imports = [
-    ./hm-configs/bat
-    ./hm-configs/zsh
-    ./hm-configs/vim
-    ./hm-configs/git
-    ./hm-configs/lazygit
-    ./hm-configs/tmux
-    ./hm-configs/autokey
-    ./hm-configs/files
-    ./hm-configs/fonts
-    ./hm-configs/utils
+    ./hm-configs
   ];
 
   home.packages = with pkgs; [
