@@ -13,7 +13,7 @@ in
   programs.tmux = {
     enable = true;
     extraConfig = ''
-      source ${dotDir}/hm-config/tmux/tmux_custom.conf
+      source ${dotDir}/hm-configs/tmux/tmux_custom.conf
     '';
   };
 }
