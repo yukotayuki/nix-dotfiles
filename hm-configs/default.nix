@@ -9,6 +9,7 @@ in
   _module.args.repoDir = repoDir;
   _module.args.dotDir = dotDir;
   imports = [
+    ./asdf
     ./bat
     ./zsh
     ./vim

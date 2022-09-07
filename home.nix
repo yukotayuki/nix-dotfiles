@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (pkgs.stdenv) isLinux;
 
 in
 {
@@ -20,8 +20,6 @@ in
   ] ++ lib.lists.optionals isLinux [
     yubikey-manager
     discord
-  ] ++ lib.lists.optionals isDarwin [
-    asdf-vm
   ];
 
   programs.home-manager = {
