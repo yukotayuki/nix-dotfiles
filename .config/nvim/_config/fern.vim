@@ -45,8 +45,8 @@ function! s:fern_local_init() abort
 endfunction
 
 " fern toggle
-" nnoremap ,f :<C-u>Fern .<CR>
-nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
+nnoremap ,f :<C-u>Fern .<CR>
+" nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 " nnoremap <Space>v :<C-u>Fern $HOME/.vim<CR>
 
 augroup my_fern
