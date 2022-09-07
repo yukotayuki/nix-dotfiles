@@ -16,7 +16,8 @@ nnoremap <Space><S-d> :sp<CR>
 "nnoremap <Space><Space> :set expandtab<CR>
 
 " open setting files
-nnoremap <Space>, :edit $MYVIMRC<CR>
+" nnoremap <Space>, :edit $MYVIMRC<CR>
+nnoremap <Space>, :edit $DOTDIR/.config/nvim/init.vim<CR>
 nnoremap ,t :edit ~/.config/nvim/toml<CR>
 
 " 移動
