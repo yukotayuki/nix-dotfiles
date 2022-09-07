@@ -65,6 +65,7 @@ Plug 'lambdalisue/fern-renderer-nerdfont.vim'
 Plug 'lambdalisue/fern-git-status.vim'
 Plug 'lambdalisue/glyph-palette.vim'
 Plug 'LumaKernel/fern-mapping-fzf.vim'
+Plug 'yuki-yano/fern-preview.vim'
 
 " Terminal
 Plug 'kassio/neoterm'
