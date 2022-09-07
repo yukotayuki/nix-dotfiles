@@ -18,7 +18,7 @@ endif
 
 set helplang=ja,en
 set nospell
-set number
+" set number
 
 " showtabline : always => 2
 set showtabline=2

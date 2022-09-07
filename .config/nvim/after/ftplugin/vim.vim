@@ -29,6 +29,6 @@ set smartindent
 set foldmethod=marker
 set autoindent
 "set smartindent
-set number
+" set number
 set nofoldenable  "折りたたみ無効
 " }}}
