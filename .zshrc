@@ -34,7 +34,9 @@ export VIMLSP="vim-lsp"
 # export VIMLSP="coc"
 
 # flatpak for nixos
-source /run/current-system/sw/etc/profile.d/flatpak.sh
+if [[ $DISTRI == 'nixos' ]]; then
+    source /run/current-system/sw/etc/profile.d/flatpak.sh
+fi
 
 setopt magic_equal_subst
 
