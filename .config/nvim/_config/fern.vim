@@ -9,6 +9,8 @@ function! s:fern_init() abort
   let g:fern#renderer="nerdfont"
   " fernを開いた時のカーソルを隠す
   let g:fern#smart_cursor = has('nvim-0.5.0') ? 'hide' : 'stick'
+  " 隠しファイルを表示
+  let g:fern#default_hidden = 1
 endfunction
 
 function! s:fern_local_init() abort
