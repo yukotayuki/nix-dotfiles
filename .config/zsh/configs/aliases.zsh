@@ -11,7 +11,9 @@ else
     alias ls="ls -G"
 fi
 alias l='ls'
-# alias vim='nvim'
+if [[ $(uname) == 'Darwin' ]]; then
+    alias vim='nvim'
+fi
 alias ll='ls -l'
 alias la='ls -a'
 
