@@ -14,6 +14,7 @@ in
     ./zsh
     ./vim
     ./git
+    ./terminal
     ./lazygit
     ./tmux
     ./autokey
