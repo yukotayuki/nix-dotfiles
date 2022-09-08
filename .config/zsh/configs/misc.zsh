@@ -5,6 +5,7 @@ zstyle ':completion:*' ignore-parents parent pwd ..
 zstyle ':completion:*:default' menu select=1
 # End of lines added by compinstall
 
+bindkey -e
 # --------------
 # anyframeの設定
 # --------------
