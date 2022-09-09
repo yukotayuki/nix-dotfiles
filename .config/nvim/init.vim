@@ -53,12 +53,14 @@ syntax enable
 filetype indent plugin on
 
 if has('termguicolors')
-  unlet! ayucolor
-  "let ayucolor='mirage'
+  " unlet! ayucolor
+  " let ayucolor='mirage'
 
   let colorschemes = getcompletion('', 'color')
-  if match(colorschemes, 'ayu') != -1
-    colorscheme ayu
+  " if match(colorschemes, 'ayu') != -1
+  if match(colorschemes, 'nord') != -1
+    " colorscheme ayu
+    colorscheme nord
   else
     colorscheme default
   endif

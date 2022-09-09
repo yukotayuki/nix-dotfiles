@@ -2,6 +2,7 @@ call plug#begin('~/.vim/plugged')
 
 " colorscheme
 Plug 'ayu-theme/ayu-vim'
+Plug 'arcticicestudio/nord-vim'
 
 " syntax
 Plug 'cespare/vim-toml'
@@ -87,7 +88,7 @@ Plug 'vim-jp/vimdoc-ja'
 "airline
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-airline/vim-airline'
-Plug 'edkolev/tmuxline.vim'
+" Plug 'edkolev/tmuxline.vim'
 
 
 " 遅延読み込み(ftdetect,
