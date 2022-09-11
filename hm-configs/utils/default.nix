@@ -8,6 +8,7 @@ in
   imports = [
     ./cheetsheet.nix
     ./display_filter.nix
+    ./search.nix
   ];
   home.packages = with pkgs; [
     ripgrep
