@@ -5,6 +5,9 @@ let
 
 in
 {
+  imports = [
+    ./display_filter.nix
+  ];
   home.packages = with pkgs; [
     ripgrep
     wget
