@@ -38,5 +38,9 @@ if [[ $DISTRI == 'nixos' ]]; then
     source /run/current-system/sw/etc/profile.d/flatpak.sh
 fi
 
+# mcfly
+export MCFLY_LIGHT=TRUE
+export MCFLY_FUZZY=2
+
 setopt magic_equal_subst
 
