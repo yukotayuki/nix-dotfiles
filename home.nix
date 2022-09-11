@@ -19,7 +19,6 @@ in
   home.packages = with pkgs; [
   ] ++ lib.lists.optionals isLinux [
     yubikey-manager
-    discord
   ];
 
   programs.home-manager = {

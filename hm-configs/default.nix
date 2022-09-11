@@ -11,6 +11,7 @@ in
   imports = [
     ./asdf
     ./autokey
+    ./discord
     ./files
     ./fonts
     ./git
