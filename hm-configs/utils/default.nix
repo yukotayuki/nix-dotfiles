@@ -9,6 +9,7 @@ in
     ./cheetsheet.nix
     ./display_filter.nix
     ./search.nix
+    ./visualization.nix
   ];
   home.packages = with pkgs; [
     ripgrep
