@@ -13,23 +13,15 @@ in
     ./visualization.nix
   ];
   home.packages = with pkgs; [
-    ripgrep
     unzip
   ] ++ lib.lists.optionals isLinux [
     gcc
     gnumake
     binutils
-    file
-    lshw
-    pciutils
   ] ++ lib.lists.optionals isDarwin [
   ];
 
   programs.htop = {
-    enable = true;
-  };
-
-  programs.jq = {
     enable = true;
   };
 }
