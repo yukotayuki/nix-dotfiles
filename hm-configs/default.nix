@@ -10,15 +10,14 @@ in
   _module.args.dotDir = dotDir;
   imports = [
     ./asdf
-    ./bat
-    ./zsh
-    ./vim
-    ./git
-    ./terminal
-    ./tmux
     ./autokey
     ./files
     ./fonts
+    ./git
+    ./terminal
+    ./tmux
     ./utils
+    ./vim
+    ./zsh
   ];
 }
