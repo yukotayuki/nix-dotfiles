@@ -8,13 +8,12 @@ in
   imports = [
     ./cheetsheet.nix
     ./display_filter.nix
+    ./network.nix
     ./search.nix
     ./visualization.nix
   ];
   home.packages = with pkgs; [
     ripgrep
-    wget
-    curl 
     unzip
   ] ++ lib.lists.optionals isLinux [
     gcc
