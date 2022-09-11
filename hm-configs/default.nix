@@ -15,7 +15,6 @@ in
     ./vim
     ./git
     ./terminal
-    ./lazygit
     ./tmux
     ./autokey
     ./files
