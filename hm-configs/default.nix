@@ -14,6 +14,7 @@ in
     ./files
     ./fonts
     ./git
+    ./slides
     ./terminal
     ./tmux
     ./utils
