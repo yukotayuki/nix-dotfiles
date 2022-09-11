@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (pkgs.stdenv) isLinux;
 
 in
 {
@@ -12,16 +12,13 @@ in
     ./search.nix
     ./visualization.nix
   ];
+
   home.packages = with pkgs; [
     unzip
+    hyperfine
   ] ++ lib.lists.optionals isLinux [
     gcc
     gnumake
     binutils
-  ] ++ lib.lists.optionals isDarwin [
   ];
-
-  programs.htop = {
-    enable = true;
-  };
 }
