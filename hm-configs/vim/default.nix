@@ -14,13 +14,24 @@ in
 {
   home.packages = with pkgs; [] ++ lib.lists.optionals isLinux [
     xclip
+    neovim
+    # rnix-lsp
+    lua
+    sumneko-lua-language-server
+    # nodePackages.vim-language-server
+    nodePackages.typescript-language-server
+    tree-sitter
   ] ++ lib.lists.optionals isDarwin [
     reattach-to-user-namespace
   ];
 
   programs = {
-    neovim = settings;
+    # neovim = settings;
   } // lib.attrsets.optionalAttrs isLinux {
     vim = settings;
+  };
+
+  xdg.configFile."nvim" = {
+    source = config.lib.file.mkOutOfStoreSymlink "${dotDir}/hm-configs/vim/nvim";
   };
 }
