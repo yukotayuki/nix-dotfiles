@@ -42,5 +42,9 @@ fi
 export MCFLY_LIGHT=TRUE
 export MCFLY_FUZZY=2
 
-setopt magic_equal_subst
+if [ "$(uname -m)" = "arm64" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
 
+setopt magic_equal_subst

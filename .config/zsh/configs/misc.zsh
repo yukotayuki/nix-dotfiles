@@ -52,3 +52,55 @@ preexec() {
    if overridden; then return; fi
    printf "\033]0;%s\a" "${1%% *} | $cwd$(gitDirty)" # Omit construct from $1 to show args
 }
+
+# --------------
+# fzf関連の設定
+# --------------
+function fzf-cd-git-repository() {
+  local -a fzf_default_opts
+  fzf_default_opts=(
+    '--height=60%'
+    '--layout=reverse'
+    '--border'
+    '--inline-info'
+    '--prompt=➜  '
+    # '--margin=0,2'
+    '--tiebreak=index'
+    '--no-mouse'
+    # '--filepath-word'
+  )
+  local selected=`ghq list | sed 's/^[^ ][^ ]*  *//' | fzf ${fzf_default_opts}`
+  if [[ -n $selected ]]; then
+    cd $REPODIR/$selected
+  fi
+  zle reset-prompt
+}
+zle -N fzf-cd-git-repository
+bindkey '^Y' fzf-cd-git-repository
+
+function fzf-open-git-remote() {
+  local -a fzf_default_opts
+  fzf_default_opts=(
+    '--height=60%'
+    '--layout=reverse'
+    '--border'
+    '--inline-info'
+    '--prompt=➜  '
+    # '--margin=0,2'
+    '--tiebreak=index'
+    '--no-mouse'
+    # '--filepath-word'
+  )
+  local selected=`ghq list | sed 's/^[^ ][^ ]*  *//' | fzf ${fzf_default_opts}`
+  if [[ -n $selected ]]; then
+    if [[ -x "`which open`" ]]; then
+      BUFFER="open https://${selected}"
+    else
+      BUFFER="xdg-open https://${selected}"
+    fi
+    zle accept-line
+  fi
+  zle reset-prompt
+}
+zle -N fzf-open-git-remote
+bindkey '^O' fzf-open-git-remote
