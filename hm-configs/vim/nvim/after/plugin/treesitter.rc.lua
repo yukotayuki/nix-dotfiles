@@ -16,12 +16,15 @@ ts.setup {
     "fish",
     "php",
     "json",
+    "javascript",
     "yaml",
     "swift",
     "css",
     "html",
     "lua",
-    "nix"
+    "nix",
+    "vim",
+    "vue"
   },
   autotag = {
     enable = true,

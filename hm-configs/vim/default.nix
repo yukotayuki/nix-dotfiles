@@ -12,15 +12,16 @@ let
   };
 in
 {
-  home.packages = with pkgs; [] ++ lib.lists.optionals isLinux [
-    xclip
+  home.packages = with pkgs; [
     neovim
-    # rnix-lsp
+    tree-sitter
     lua
+  ] ++ lib.lists.optionals isLinux [
+    xclip
+    # rnix-lsp
     sumneko-lua-language-server
     # nodePackages.vim-language-server
     nodePackages.typescript-language-server
-    tree-sitter
   ] ++ lib.lists.optionals isDarwin [
     reattach-to-user-namespace
   ];
