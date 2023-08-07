@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isNixOS, ... }:
 
 let
   inherit (pkgs.stdenv) isLinux;
@@ -17,8 +17,10 @@ in
     unzip
     hyperfine
   ] ++ lib.lists.optionals isLinux [
+    binutils
+    fzf
+  ] ++ lib.lists.optionals isNixOS [
     gcc
     gnumake
-    binutils
   ];
 }
