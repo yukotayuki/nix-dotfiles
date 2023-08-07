@@ -8,8 +8,7 @@ in lib.mkIf (isLinux)
 
   home.packages = with pkgs; [
   ] ++ lib.lists.optionals isNixOS [
-    # autokey
-    cowsay
+    autokey
   ];
   xdg.configFile = {
     "autokey" = {
