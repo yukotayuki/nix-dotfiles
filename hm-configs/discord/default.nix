@@ -1,9 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isNixOS, ... }:
 
-let
-  inherit (pkgs.stdenv) isLinux;
-
-in lib.mkIf (isLinux)
+lib.mkIf (isNixOS)
 {
   home.packages = with pkgs; [
     discord

@@ -1,7 +1,7 @@
 # Enter script code
 winClass = window.get_active_class()
 
-if "terminal" in winClass or "wezterm" in winClass or "Alacritty" in winClass:
+if "terminal" in winClass or "wezterm" in winClass or "Alacritty" in winClass or "Tilix" in winClass:
     keyboard.send_keys("<shift>+<ctrl>+x")
 else:
     keyboard.send_keys("<ctrl>+x")

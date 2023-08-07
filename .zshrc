@@ -16,12 +16,6 @@ zinit light-mode for \
     zdharma-continuum/z-a-patch-dl \
     zdharma-continuum/z-a-bin-gem-node
 
-if [ $(uname) = "Linux" ]; then
-    export DISTRI=$(. /etc/lsb-release; echo $DISTRIB_ID)
-fi
-export REPODIR="$HOME/work/repositories"
-export DOTDIR="$REPODIR/github.com/yukotayuki/nix-dotfiles"
-export ZHOMEDIR="$DOTDIR/.config/zsh"
 source $ZHOMEDIR/zinit_plugins.zsh
 source $ZHOMEDIR/configs/aliases.zsh
 source $ZHOMEDIR/configs/setopt.zsh
@@ -29,18 +23,13 @@ source $ZHOMEDIR/configs/misc.zsh
 source $ZHOMEDIR/configs/anyenv.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# vim settings
-export VIMLSP="vim-lsp"
-# export VIMLSP="coc"
+# autoload
+autoload -Uz colors && colors
+autoload -Uz compinit && compinit
 
 # flatpak for nixos
 if [[ $DISTRI == 'nixos' ]]; then
     source /run/current-system/sw/etc/profile.d/flatpak.sh
 fi
 
-# mcfly
-export MCFLY_LIGHT=TRUE
-export MCFLY_FUZZY=2
-
-setopt magic_equal_subst
-
+# setopt magic_equal_subst

@@ -1,8 +1,6 @@
 { config, pkgs, lib, dotDir, ... }:
 {
-  home.packages = with pkgs; [
-    peco
-  ];
+  # home.packages = with pkgs; [];
 
   programs = {
     zsh = {
@@ -17,10 +15,6 @@
     };
 
     direnv = {
-      enable = true;
-    };
-
-    mcfly = {
       enable = true;
     };
 

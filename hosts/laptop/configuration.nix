@@ -6,7 +6,7 @@
 {
   imports = [
     /etc/nixos/hardware-configuration.nix
-    ./virtualbox_host.nix
+    # ./virtualbox_host.nix
   ];
 
   nix = {
@@ -26,7 +26,17 @@
     loader.efi.canTouchEfiVariables = true;
     loader.efi.efiSysMountPoint = "/boot/efi";
 
-    kernelPackages = pkgs.linuxPackages_5_18;
+    # kernelPackages = pkgs.linuxPackages_5_18;
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPatches = [
+      {
+        name = "pinctrl_amd";
+        patch = null;
+        extraConfig = ''
+          PINCTRL_AMD y
+        '';
+      }
+    ];
   };
 
   networking = {

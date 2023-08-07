@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, isNixOS, ... }:
 
 let
   repoDir = "${config.home.homeDirectory}/work/repositories";
@@ -8,14 +8,15 @@ in
 {
   _module.args.repoDir = repoDir;
   _module.args.dotDir = dotDir;
+  _module.args.isNixOS = isNixOS;
   imports = [
-    ./asdf
+    # ./asdf
     ./autokey
     ./discord
     ./files
     ./fonts
     ./git
-    ./slides
+    # ./slides
     ./terminal
     ./tmux
     ./utils
