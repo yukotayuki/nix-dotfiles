@@ -4,11 +4,11 @@
 #
 ###################################################
 
-if [[ $DISTRI == 'nixos' ]]; then
+if [[ $(uname) == 'Darwin' ]]; then
+    alias ls="ls -G"
+else
     alias ls="ls --color"
     # alias ls="lsd"
-else
-    alias ls="ls -G"
 fi
 alias l='ls'
 if [[ $(uname) == 'Darwin' ]]; then
