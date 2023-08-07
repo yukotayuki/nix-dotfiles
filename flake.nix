@@ -20,6 +20,7 @@
 
       mkHomeConfig = 
       let
+        isNixOS = false;
         homeDirectoryPrefix = pkgs:
           if pkgs.stdenv.hostPlatform.isDarwin then "/Users" else "/home";
       in
@@ -29,6 +30,8 @@
       }:
       home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
+        extraSpecialArgs = { inherit isNixOS; };
+
         modules = [
           ./home.nix
           {
@@ -40,7 +43,11 @@
         ];
       };
 
-      mkNixOSConfig = { system ? "x86_64-linux" , extraModules }:
+      mkNixOSConfig = 
+      let
+        isNixOS = true;
+      in
+      { system ? "x86_64-linux" , extraModules }:
       nixpkgs.lib.nixosSystem {
         inherit system;
 
@@ -50,6 +57,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users."${username}" = import ./home.nix;
+            home-manager.extraSpecialArgs = { inherit isNixOS; };
           }
         ] ++ extraModules;
       };
