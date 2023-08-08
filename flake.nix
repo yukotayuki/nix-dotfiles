@@ -62,7 +62,11 @@
         ] ++ extraModules;
       };
 
-      mkDarwinConfig = { system ? "x86_64-darwin", extraModules }:
+      mkDarwinConfig = 
+      let
+        isNixOS = false;
+      in
+      { system ? "x86_64-darwin", extraModules }:
       darwin.lib.darwinSystem {
         inherit system;
         # specialArgs = {
@@ -74,6 +78,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users."${username}" = import ./home.nix;
+            home-manager.extraSpecialArgs = { inherit isNixOS; };
           }
         ] ++ extraModules;
       };
