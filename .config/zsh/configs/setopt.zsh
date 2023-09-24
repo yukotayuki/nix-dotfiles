@@ -81,3 +81,5 @@ setopt inc_append_history
 setopt no_beep
 setopt no_hist_beep
 setopt no_list_beep
+
+setopt prompt_subst
