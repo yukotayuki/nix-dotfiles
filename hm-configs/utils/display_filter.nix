@@ -16,6 +16,9 @@ in
   programs = {
     bat = {
       enable = true;
+      config = {
+        theme = "gruvbox-dark";
+      };
     };
     jq = {
       enable = true;
