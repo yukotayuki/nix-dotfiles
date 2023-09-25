@@ -1,0 +1,40 @@
+{
+  "workbench.colorTheme": "Ayu Mirage Bordered",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "redhat.telemetry.enabled": true,
+  "openapi.defaultPreviewRenderer": "redoc",
+  "vsnotes.defaultNotePath": "~/work/documents/vsnotes",
+  "vsnotes.tokens": [
+    {
+      "type": "datetime",
+      "token": "{dt}",
+      "format": "YYYY-MM-DD_HH-mm",
+      "description": "Insert formatted datetime."
+    },
+    {
+      "type": "datetime",
+      "token": "{my_dt}",
+      "format": "YYYY-MM-DD",
+      "description": "Insert formatted datetime."
+    },
+    {
+      "type": "title",
+      "token": "{title}",
+      "description": "Insert note title from input box.",
+      "format": "Untitled"
+    },
+    {
+      "type": "extension",
+      "token": "{ext}",
+      "description": "Insert file vsnotes.",
+      "format": "md"
+    }
+  ],
+  "vsnotes.defaultNoteTitle": "{my_dt}_{title}.{ext}",
+  "jest.autoRun": "off",
+  "window.zoomLevel": 1
+}
