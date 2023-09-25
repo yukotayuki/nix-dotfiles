@@ -1,0 +1,6 @@
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set clipboard+=unnamed
+nnoremap / :<C-u>action Find<CR>
