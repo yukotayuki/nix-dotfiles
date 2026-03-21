@@ -1,29 +1,21 @@
-{ pkgs, machine, ...}:
+{ pkgs, lib, ... }:
 
 {
-  environment = {
-    loginShell = "${pkgs.zsh}/bin/zsh";
-    shells = [ pkgs.zsh ];
-  };
+  environment.shells = [ pkgs.zsh ];
 
   # homebrew = {
   #   enable = true;
-  #   brews = [
-  #     "mas"
-  #   ];
+  #   brews = [ "mas" ];
   # };
 
-  networking = {
-    computerName = machine;
-    hostName = machine;
-    localHostName = machine;
-  };
-
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
-
-  services.nix-daemon.enable = true;
+  # nix.settings / nix.extraOptions を使わない理由:
+  #   Determinate Nix は独自のデーモンと nix.conf を管理しており、
+  #   nix-darwin の nix 管理機能と競合する（有効化すると起動時に
+  #   "Determinate detected, aborting" エラーになる）。
+  #   nix.enable = false にすることで nix 管理を Determinate に委譲する。
+  nix.enable = false;
 
   programs.zsh.enable = true;
+
+  system.stateVersion = 5;
 }

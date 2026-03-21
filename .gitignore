@@ -102,3 +102,7 @@ zsdoc/data
 !/tests/_output/.gitkeep
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,linux,vim,zsh
+result
+
+# Claude Code のローカル設定（セッション固有の許可リスト）
+.claude/settings.local.json

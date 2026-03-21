@@ -16,9 +16,10 @@ in
   home.packages = with pkgs; [
     unzip
     hyperfine
+    fzf
+    gh
   ] ++ lib.lists.optionals isLinux [
     binutils
-    fzf
   ] ++ lib.lists.optionals isNixOS [
     gcc
     gnumake
