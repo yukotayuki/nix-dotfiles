@@ -10,7 +10,10 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-source $ZHOMEDIR/zinit_plugins.zsh
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light chrissicool/zsh-256color
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
 
 # fpath
 if type brew &>/dev/null; then
@@ -21,7 +24,9 @@ autoload -Uz compinit && compinit -u
 
 # completions
 if type kubectl &>/dev/null; then eval "$(kubectl completion zsh)"; fi
-if type direnv &>/dev/null; then eval "$(direnv hook zsh)"; fi
+
+# direnv: home-manager の programs.direnv.enable で管理するため手動 hook は不要。
+# zoxide: home-manager の programs.zoxide.enable で管理するため手動 hook は不要。
 
 bindkey -e
 
@@ -29,17 +34,6 @@ bindkey -e
 for config in $ZHOMEDIR/configs/[0-9]*.zsh; do
     source $config
 done
-
-# source functions
-for func in $ZHOMEDIR/functions/*.zsh; do
-    source $func
-done
-
-# arch switch aliases
-if (( $+commands[arch] )); then
-    alias x64='exec arch -arch x86_64 "$SHELL"'
-    alias a64='exec arch -arch arm64e "$SHELL"'
-fi
 
 # flatpak for nixos
 if [[ $DISTRI == 'nixos' ]]; then

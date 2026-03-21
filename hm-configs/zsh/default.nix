@@ -4,10 +4,10 @@
     zsh = {
       enable = true;
       initContent = ''
-        source ${dotDir}/.zshrc
+        source ${dotDir}/.config/zsh/zshrc
       '';
       envExtra = ''
-        source ${dotDir}/.zshenv
+        source ${dotDir}/.config/zsh/zshenv
       '';
       enableCompletion = false;
     };
