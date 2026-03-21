@@ -23,4 +23,9 @@ dc() {
 }
 
 # nix-darwin
-alias darwin-switch='sudo darwin-rebuild switch --flake "$DOTDIR#darwin@arm"'
+# alias ではなく関数にする理由:
+#   alias のシングルクォート内では $DOTDIR が展開されないため、
+#   どのディレクトリから実行しても動くように関数で展開時に評価させる。
+darwin-switch() {
+    sudo darwin-rebuild switch --flake "${DOTDIR:-$HOME/dotfiles}#darwin@arm"
+}

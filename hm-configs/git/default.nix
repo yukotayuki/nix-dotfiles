@@ -28,6 +28,16 @@
       ignores = [ ".envrc" ".DS_Store" ];
     };
 
+    gh = {
+      enable = true;
+      settings = {
+        git_protocol = "ssh";
+        aliases = {
+          co = "pr checkout";
+        };
+      };
+    };
+
     lazygit = {
       enable = true;
       settings = {

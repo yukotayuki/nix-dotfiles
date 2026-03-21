@@ -33,13 +33,14 @@ curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootst
 
 以下は用途に応じて手動でインストールする。
 
-### Claude Code
+### Claude Code（CLI）
 
 ```bash
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-> 更新頻度が高いため nix・bootstrap.sh の管理対象外としている。
+> GUI アプリの Claude は darwin-switch で自動インストールされる。
+> CLI の Claude Code のみ更新頻度が高いため管理対象外としている。
 
 ## 日常的な操作
 

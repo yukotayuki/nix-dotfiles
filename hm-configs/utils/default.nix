@@ -18,6 +18,9 @@ in
     hyperfine
     fzf
     gh
+    rsync
+    minicom
+    smartmontools
   ] ++ lib.lists.optionals isLinux [
     binutils
   ] ++ lib.lists.optionals isNixOS [

@@ -1,4 +1,9 @@
 export LANG=en_US.UTF-8
+
+# Ctrl+W をパス区切り（/）で止める。
+# デフォルトの WORDCHARS に / が含まれているため ~/config/karabiner のような
+# パス全体がひとつの単語として扱われてしまう。/ を除外することで区切りが細かくなる。
+WORDCHARS="${WORDCHARS/\//}"
 export PATH="$HOME/.local/bin:$PATH"
 export HISTFILE=~/.histfile
 export HISTSIZE=100000
@@ -8,7 +13,6 @@ export DIRSTACK_SIZE=100
 # Homebrew (Apple Silicon)
 if [ "$(uname -m)" = "arm64" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-    export PATH="/opt/homebrew/bin:$PATH"
 fi
 
 # Linux distro detection
