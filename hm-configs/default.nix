@@ -23,6 +23,7 @@ in
 
   imports = [
     ./autokey
+    ./karabiner
     ./discord
     ./files
     ./fonts
