@@ -5,7 +5,7 @@
   programs = {
     zsh = {
       enable = true;
-      initExtra = ''
+      initContent = ''
         source ${dotDir}/.zshrc
       '';
       envExtra = ''

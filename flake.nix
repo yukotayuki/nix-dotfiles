@@ -9,7 +9,7 @@
     };
 
     darwin = {
-      url = "github:lnl7/nix-darwin/master";
+      url = "github:nix-darwin/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -62,21 +62,29 @@
         ] ++ extraModules;
       };
 
-      mkDarwinConfig = 
+      mkDarwinConfig =
       let
         isNixOS = false;
       in
       { system ? "x86_64-darwin", extraModules }:
       darwin.lib.darwinSystem {
         inherit system;
-        # specialArgs = {
-        #   inherit machine;
-        # };
         modules = [
           home-manager.darwinModules.home-manager
           {
+            # home-manager の nixos/common.nix は home.homeDirectory を
+            # users.users.<name>.home から導出する。未設定だと null になり
+            # ビルド時に `absolute path` 型チェックで失敗する。
+            # home.nix 側で設定しない理由:
+            #   home.nix は standalone / darwin で共用しているため、
+            #   darwin 固有のパスはここで設定する方が責務が明確。
+            users.users."${username}".home = "/Users/${username}";
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            # 初回 activation 時に home-manager が管理したいファイル
+            # （.zshrc, .config/git/ignore など）が既存の場合、
+            # abort せずに <file>.bak へ退避してから上書きする。
+            home-manager.backupFileExtension = "bak";
             home-manager.users."${username}" = import ./home.nix;
             home-manager.extraSpecialArgs = { inherit isNixOS; };
           }

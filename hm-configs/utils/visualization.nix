@@ -4,7 +4,7 @@
 {
   home.packages = with pkgs; [
     duf
-    du-dust
+    dust
   ];
   programs = {
     htop = {
