@@ -21,3 +21,6 @@ alias tsource='tmux source-file ~/.tmux.conf'
 dc() {
     docker compose "$@"
 }
+
+# nix-darwin
+alias darwin-switch='sudo darwin-rebuild switch --flake "$DOTDIR#darwin@arm"'

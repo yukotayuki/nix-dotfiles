@@ -17,6 +17,7 @@ in
     unzip
     hyperfine
     fzf
+    gh
   ] ++ lib.lists.optionals isLinux [
     binutils
   ] ++ lib.lists.optionals isNixOS [
