@@ -28,9 +28,6 @@ in
     reattach-to-user-namespace
   ];
 
-  programs = {
-    neovim = settings;
-  } // lib.attrsets.optionalAttrs isLinux {
-    vim = settings;
-  };
+  programs.neovim = settings;
+  programs.vim = lib.mkIf isLinux settings;
 }
