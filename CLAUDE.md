@@ -40,12 +40,6 @@ curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootst
 
 どこから実行しても動く（カレントディレクトリに依存しない）。
 
-## 改善したいこと
-- [ ] パッケージの追加・整理
-- [x] home-manager の設定改善（optionalAttrs → mkIf、ghostty・karabiner・mise 追加）
-- [x] nix-darwin のシステム設定（system.defaults、homebrew casks 整理）
-- [x] flake.nix の構造改善（isNixOS のインライン化）
-- [x] vim / tmux / zsh 設定のリファクタリング
 
 ## 参考リンク
 - Nix インストーラー: https://github.com/DeterminateSystems/nix-installer
