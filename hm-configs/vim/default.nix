@@ -1,7 +1,7 @@
 { config, pkgs, lib, dotDir, ... }:
 
 let
-  inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (pkgs.stdenv) isLinux;
   settings = {
     enable = true;
     # extraLuaConfig を使わない理由:
@@ -24,9 +24,11 @@ in
     nodejs
   ] ++ lib.lists.optionals isLinux [
     xclip
-  ] ++ lib.lists.optionals isDarwin [
-    reattach-to-user-namespace
   ];
+  # reattach-to-user-namespace を使わない理由:
+  #   neovim の general.lua で clipboard=unnamed を設定しており、
+  #   macOS では pbcopy/pbpaste が直接使われるため不要。
+  #   tmux 側も copy-command = pbcopy に移行済み。
 
   programs.neovim = settings;
   programs.vim = lib.mkIf isLinux settings;
