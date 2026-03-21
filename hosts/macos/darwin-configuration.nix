@@ -12,6 +12,10 @@
     # cleanup = "zap" にすると宣言にない既存パッケージが全部消えるため "none" のまま。
     # 安定したら "uninstalled" か "zap" に切り替えることを検討する。
     onActivation.cleanup = "none";
+    brews = [
+      # telnet: nixpkgs の inetutils は Darwin 向けビルドが不安定なため homebrew で管理
+      "telnet"
+    ];
     casks = [
       "claude"
       "karabiner-elements"
