@@ -1,12 +1,10 @@
 return {
   {
-    'sainnhe/everforest',
+    'shaunsingh/nord.nvim',
     lazy = false,
     priority = 1000,
-    enabled = true,
     config = function()
-      vim.g.everforest_background = 'soft'
-      vim.cmd.colorscheme 'everforest'
+      vim.cmd.colorscheme 'nord'
     end
   }
 }

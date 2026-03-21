@@ -1,5 +1,5 @@
 return {
-  { 'windwp/nvim-autopairs', event = 'InsertEnter', config = true },
+  -- nvim-autopairs は completion.lua で nvim-cmp と統合して管理する。
   { 'windwp/nvim-ts-autotag', config = true },
   { 'JoosepAlviste/nvim-ts-context-commentstring' },
   {

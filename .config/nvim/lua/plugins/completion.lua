@@ -12,6 +12,9 @@ return {
       local cmp = require('cmp')
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 
+      -- nvim-autopairs の setup をここで行う（dev.lua との重複を避けるため）
+      require('nvim-autopairs').setup()
+
       cmp.setup({
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
