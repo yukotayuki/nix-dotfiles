@@ -1,7 +1,5 @@
 { config, pkgs, lib, dotDir, ... }:
 {
-  # home.packages = with pkgs; [];
-
   programs = {
     zsh = {
       enable = true;

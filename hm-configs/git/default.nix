@@ -46,7 +46,7 @@
           showIcons = true;
         };
         os = {
-          editCommand = "vim";
+          editCommand = "nvim";
         };
       };
     };
