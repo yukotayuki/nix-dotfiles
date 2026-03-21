@@ -73,21 +73,33 @@ if [ -d "$DOTFILES_DIR/.git" ]; then
 else
   info "dotfiles をクローンします..."
   # git がなければ nix の git を使う
+  clone_repo() {
+    local git_cmd="$1"
+    info "SSH でクローンを試みます..."
+    if $git_cmd clone "git@github.com:$GITHUB_REPO.git" "$DOTFILES_DIR" 2>/dev/null; then
+      return 0
+    fi
+    warn "SSH に失敗しました。HTTPS にフォールバックします..."
+    $git_cmd clone "https://github.com/$GITHUB_REPO" "$DOTFILES_DIR"
+  }
+
   if command -v git &>/dev/null; then
-    git clone "https://github.com/$GITHUB_REPO" "$DOTFILES_DIR"
+    clone_repo git
   else
-    nix shell nixpkgs#git --command \
-      git clone "https://github.com/$GITHUB_REPO" "$DOTFILES_DIR"
+    nix shell nixpkgs#git --command bash -c "
+      git clone 'git@github.com:$GITHUB_REPO.git' '$DOTFILES_DIR' 2>/dev/null \
+        || git clone 'https://github.com/$GITHUB_REPO' '$DOTFILES_DIR'
+    "
   fi
   success "dotfiles クローン完了 → $DOTFILES_DIR"
 fi
 
-## ------------------------------------------------------------------------------
-## Step 4: nix-darwin switch
-## ------------------------------------------------------------------------------
-#cd "$DOTFILES_DIR"
-#info "nix-darwin を適用します（初回は時間がかかります）..."
-#nix run nix-darwin -- switch --flake ".#${FLAKE_TARGET}"
+# ------------------------------------------------------------------------------
+# Step 4: nix-darwin switch
+# ------------------------------------------------------------------------------
+cd "$DOTFILES_DIR"
+info "nix-darwin を適用します（初回は時間がかかります）..."
+nix run nix-darwin -- switch --flake ".#${FLAKE_TARGET}"
 
 # ------------------------------------------------------------------------------
 # 完了
