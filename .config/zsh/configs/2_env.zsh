@@ -1,4 +1,5 @@
 export LANG=en_US.UTF-8
+export PATH="$HOME/.local/bin:$PATH"
 export HISTFILE=~/.histfile
 export HISTSIZE=100000
 export SAVEHIST=100000
