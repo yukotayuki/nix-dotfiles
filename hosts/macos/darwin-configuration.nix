@@ -9,19 +9,32 @@
 
   homebrew = {
     enable = true;
-    # cleanup = "zap" にすると宣言にない既存パッケージが全部消えるため "none" のまま。
-    # 安定したら "uninstalled" か "zap" に切り替えることを検討する。
-    onActivation.cleanup = "none";
+    # "zap" にすると宣言にない既存パッケージが全部消えるため "uninstalled" にとどめる。
+    # 宣言から外したパッケージは次回 darwin-switch 時にアンインストールされる。
+    onActivation.cleanup = "uninstalled";
     brews = [
       # telnet: nixpkgs の inetutils は Darwin 向けビルドが不安定なため homebrew で管理
       "telnet"
     ];
     casks = [
       "claude"
+      "font-udev-gothic-nf"
+      "ghostty"
       "karabiner-elements"
       "obsidian"
       "tailscale-app"
     ];
+  };
+
+  system.defaults = {
+    NSGlobalDomain = {
+      # ホールドで文字選択候補を出さず、キーリピートを有効にする
+      ApplePressAndHoldEnabled = false;
+    };
+    dock = {
+      autohide = true;
+      tilesize = 43;
+    };
   };
 
   # nix.settings / nix.extraOptions を使わない理由:
