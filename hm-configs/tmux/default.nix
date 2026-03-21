@@ -1,19 +1,16 @@
 { config, pkgs, lib, dotDir, ... }:
 
-let
-  inherit (pkgs.stdenv) isDarwin isLinux;
-in
 {
-  home.packages = with pkgs; [] ++ lib.lists.optionals isLinux [
-    xclip
-  ] ++ lib.lists.optionals isDarwin [
-    reattach-to-user-namespace
-  ];
-
   programs.tmux = {
     enable = true;
+    # TPM を使わない理由:
+    #   home-manager の plugins で宣言管理すると prefix+I での手動インストールが不要になる。
+    plugins = with pkgs.tmuxPlugins; [
+      sensible
+      nord
+    ];
     extraConfig = ''
-      source ${dotDir}/hm-configs/tmux/tmux_custom.conf
+      source ${dotDir}/hm-configs/tmux/tmux.conf
     '';
   };
 }
