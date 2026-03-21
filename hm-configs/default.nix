@@ -22,13 +22,10 @@ in
   '';
 
   imports = [
-    ./autokey
     ./karabiner
-    ./discord
     ./files
     ./fonts
     ./git
-    # ./slides
     ./terminal
     ./tmux
     ./utils
