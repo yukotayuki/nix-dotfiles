@@ -1,4 +1,9 @@
 theme = nord
 
-font-family = UDEV Gothic NF
-font-size = 14
+font-family = UDEV Gothic 35NF
+font-size = 18
+
+# ctrl+[ を ESC として送信する。
+# Ghostty はデフォルトで ctrl+[ を fixterms エンコーディング（CSI 91;5u）として
+# 送信するため、zsh vi モードや neovim で ESC として認識されない。
+keybind = ctrl+left_bracket=esc:
