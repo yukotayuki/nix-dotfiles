@@ -16,10 +16,9 @@ in
     ./hm-configs
   ];
 
-  home.packages = with pkgs; [
-  ] ++ lib.lists.optionals isLinux [
+  home.packages = lib.lists.optionals isLinux (with pkgs; [
     yubikey-manager
-  ];
+  ]);
 
   programs.home-manager = {
     enable = true;

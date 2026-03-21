@@ -22,6 +22,7 @@ in
   '';
 
   imports = [
+    ./ghostty
     ./karabiner
     ./files
     ./fonts
