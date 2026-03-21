@@ -21,5 +21,9 @@
     zoxide = {
       enable = true;
     };
+
+    mise = {
+      enable = true;
+    };
   };
 }
