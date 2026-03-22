@@ -46,5 +46,20 @@
 
   programs.zsh.enable = true;
 
+  # macOS の ssh-agent（/usr/bin/ssh-agent）を使わない理由:
+  #   Apple 版 ssh-agent は FIDO2（ed25519-sk）に非対応。
+  #   nixpkgs の openssh に同梱された ssh-agent を launchd user agent として起動し、
+  #   SSH_AUTH_SOCK をそのソケットに向けることで FIDO2 キーが使えるようになる。
+  launchd.user.agents.ssh-agent = {
+    serviceConfig = {
+      ProgramArguments = [
+        "/bin/sh" "-c"
+        "rm -f /Users/joo/.ssh/agent.socket && exec ${pkgs.openssh}/bin/ssh-agent -D -a /Users/joo/.ssh/agent.socket"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+    };
+  };
+
   system.stateVersion = 5;
 }
