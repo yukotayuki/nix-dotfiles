@@ -10,7 +10,6 @@ set -euo pipefail
 # ------------------------------------------------------------------------------
 GITHUB_REPO="yukotayuki/nix-dotfiles"
 DOTFILES_DIR="$HOME/dotfiles"
-FLAKE_TARGET="darwin@arm"   # flake.nix の darwinConfigurations のキー名
 
 # ------------------------------------------------------------------------------
 # ヘルパー
@@ -21,10 +20,37 @@ warn()    { echo "$(tput bold)$(tput setaf 3)!$(tput sgr0)  $*"; }
 die()     { echo "$(tput bold)$(tput setaf 1)✗$(tput sgr0)  $*" >&2; exit 1; }
 
 # ------------------------------------------------------------------------------
-# 前提チェック
+# OS・アーキテクチャ検出
+# flake ターゲットをここで決定することで、以降のステップを OS 分岐なしに書ける。
 # ------------------------------------------------------------------------------
-[[ "$(uname)" == "Darwin" ]] || die "このスクリプトは macOS 専用です"
-[[ "$(uname -m)" == "arm64" ]] || warn "arm64 以外のアーキテクチャです。FLAKE_TARGET を確認してください"
+OS="$(uname)"
+ARCH="$(uname -m)"
+
+case "$OS" in
+  Darwin)
+    IS_DARWIN=true
+    if [ "$ARCH" = "arm64" ]; then
+      DARWIN_TARGET="darwin@arm"
+    else
+      warn "arm64 以外のアーキテクチャです。DARWIN_TARGET を確認してください"
+      DARWIN_TARGET="darwin"
+    fi
+    ;;
+  Linux)
+    IS_DARWIN=false
+    if [ "$ARCH" = "x86_64" ]; then
+      HM_TARGET="hm-ubuntu"
+    elif [ "$ARCH" = "aarch64" ]; then
+      # ARM Linux 向けターゲットが追加されたら更新する
+      die "aarch64 Linux は未対応です"
+    else
+      die "未対応のアーキテクチャです: $ARCH"
+    fi
+    ;;
+  *)
+    die "未対応の OS です: $OS"
+    ;;
+esac
 
 # ------------------------------------------------------------------------------
 # Step 1: Nix インストール（Determinate Systems）
@@ -35,7 +61,7 @@ else
   info "Nix をインストールします（Determinate Systems インストーラー）..."
   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix \
     | sh -s -- install --no-confirm
-  
+
   # 現在のシェルセッションで nix を使えるようにする
   if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
     # shellcheck disable=SC1091
@@ -47,20 +73,23 @@ else
 fi
 
 # ------------------------------------------------------------------------------
-# Step 2: Homebrew インストール
+# Step 2: Homebrew インストール（macOS のみ）
 # nix-darwin の homebrew モジュールは Homebrew が既に入っていることを前提とする
 # https://nix-darwin.github.io/nix-darwin/manual/ (homebrew.enable の説明参照)
+# Linux では Homebrew は不要のためスキップする。
 # ------------------------------------------------------------------------------
-if command -v brew &>/dev/null; then
-  success "Homebrew は既にインストール済みです ($(brew --version | head -1))"
-else
-  info "Homebrew をインストールします..."
-  /bin/bash -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  # Apple Silicon の場合、brew を PATH に通す
-  if [ -f /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+if $IS_DARWIN; then
+  if command -v brew &>/dev/null; then
+    success "Homebrew は既にインストール済みです ($(brew --version | head -1))"
+  else
+    info "Homebrew をインストールします..."
+    /bin/bash -c "$(curl --proto '=https' --tlsv1.2 -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Apple Silicon の場合、brew を PATH に通す
+    if [ -f /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+    success "Homebrew インストール完了"
   fi
-  success "Homebrew インストール完了"
 fi
 
 # ------------------------------------------------------------------------------
@@ -95,11 +124,19 @@ else
 fi
 
 # ------------------------------------------------------------------------------
-# Step 4: nix-darwin switch
+# Step 4: 設定を適用
+# macOS: nix-darwin switch
+# Linux: home-manager switch（スタンドアロン）
 # ------------------------------------------------------------------------------
 cd "$DOTFILES_DIR"
-info "nix-darwin を適用します（初回は時間がかかります）..."
-nix run nix-darwin -- switch --flake ".#${FLAKE_TARGET}"
+
+if $IS_DARWIN; then
+  info "nix-darwin を適用します（初回は時間がかかります）..."
+  nix run nix-darwin -- switch --flake ".#${DARWIN_TARGET}"
+else
+  info "home-manager を適用します（初回は時間がかかります）..."
+  nix run home-manager -- switch --flake ".#${HM_TARGET}"
+fi
 
 # ------------------------------------------------------------------------------
 # 完了
