@@ -1,11 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: ["**"]
   pull_request:
   # nixpkgs の更新で設定が壊れていないかを定期検知するため週次で実行する。
-  # push だけでは nixpkgs 起因の破壊に気づくのが遅れるため。
+  # PR チェックと組み合わせることで、push 時の不要なビルドを省いている。
   schedule:
     - cron: "0 0 * * 0"
 
