@@ -25,6 +25,9 @@
         { system ? "x86_64-linux"
         , pkgs ? (import nixpkgs { inherit system; })
         , homeDirectory ? "${homeDirectoryPrefix pkgs}/${username}"
+        # ホスト固有の設定ファイルを受け取る。
+        # ホストが増えても flake.nix を肥大化させずに差分を管理できる。
+        , extraModules ? []
         }:
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -38,7 +41,7 @@
                 inherit homeDirectory;
               };
             }
-          ];
+          ] ++ extraModules;
         };
 
       mkNixOSConfig = { system ? "x86_64-linux", extraModules }:
@@ -93,6 +96,10 @@
           system = "aarch64-linux";
         };
         hm-linux = mkHomeConfig {};
+        hm-ubuntu = mkHomeConfig {
+          system = "x86_64-linux";
+          extraModules = [ ./hosts/ubuntu/home-configuration.nix ];
+        };
       };
 
       nixosConfigurations = {
