@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - ".github/workflows/**"
   # nixpkgs の更新で設定が壊れていないかを定期検知するため週次で実行する。
   # PR チェックと組み合わせることで、push 時の不要なビルドを省いている。
   schedule:
