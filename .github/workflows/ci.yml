@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+    paths-ignore:
+      - ".github/workflows/**"
   # nixpkgs の更新で設定が壊れていないかを定期検知するため週次で実行する。
   # PR チェックと組み合わせることで、push 時の不要なビルドを省いている。
   schedule:
@@ -13,13 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Nix をインストール
-        uses: DeterminateSystems/nix-installer-action@v16
+        uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
 
       - name: Nix キャッシュを有効化
-        uses: DeterminateSystems/magic-nix-cache-action@v9
+        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
 
       - name: hm-ubuntu をビルド
         run: nix build .#homeConfigurations.hm-ubuntu.activationPackage --no-link
