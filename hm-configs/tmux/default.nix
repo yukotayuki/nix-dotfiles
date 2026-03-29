@@ -1,4 +1,4 @@
-{ config, pkgs, lib, dotDir, ... }:
+{ pkgs, dotDir, ... }:
 
 {
   programs.tmux = {

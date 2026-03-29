@@ -1,8 +1,5 @@
-{ config, lib, dotDir, ... }:
+{ lib, dotDir, ... }:
 
-let
-  inherit (lib.hm.dag) entryAfter;
-in
 {
   # home.file を使わない理由:
   #   Ghostty は設定の変更を config に直接書き戻す場合があるため、

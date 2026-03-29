@@ -14,7 +14,7 @@
     };
   };
 
-  outputs = { self, ... }@inputs: with inputs;
+  outputs = inputs: with inputs;
     let
       username = "joo";
 
@@ -51,10 +51,12 @@
           modules = [
             home-manager.nixosModules.home-manager
             {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users."${username}" = import ./home.nix;
-              home-manager.extraSpecialArgs = { isNixOS = true; };
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users."${username}" = import ./home.nix;
+                extraSpecialArgs = { isNixOS = true; };
+              };
             }
           ] ++ extraModules;
         };
@@ -72,14 +74,16 @@
               #   home.nix は standalone / darwin で共用しているため、
               #   darwin 固有のパスはここで設定する方が責務が明確。
               users.users."${username}".home = "/Users/${username}";
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              # 初回 activation 時に home-manager が管理したいファイル
-              # （.zshrc, .config/git/ignore など）が既存の場合、
-              # abort せずに <file>.bak へ退避してから上書きする。
-              home-manager.backupFileExtension = "bak";
-              home-manager.users."${username}" = import ./home.nix;
-              home-manager.extraSpecialArgs = { isNixOS = false; };
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                # 初回 activation 時に home-manager が管理したいファイル
+                # （.zshrc, .config/git/ignore など）が既存の場合、
+                # abort せずに <file>.bak へ退避してから上書きする。
+                backupFileExtension = "bak";
+                users."${username}" = import ./home.nix;
+                extraSpecialArgs = { isNixOS = false; };
+              };
             }
           ] ++ extraModules;
         };

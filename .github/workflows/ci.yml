@@ -4,12 +4,30 @@ on:
   pull_request:
     paths-ignore:
       - ".github/workflows/**"
-  # nixpkgs の更新で設定が壊れていないかを定期検知するため週次で実行する。
-  # PR チェックと組み合わせることで、push 時の不要なビルドを省いている。
-  schedule:
-    - cron: "0 0 * * 0"
+  workflow_dispatch:
 
 jobs:
+  lint:
+    name: Nix lint (deadnix + statix)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Nix をインストール
+        uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
+
+      - name: Nix キャッシュを有効化
+        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+
+      - name: deadnix（未使用コード検出）
+        run: nix run nixpkgs#deadnix -- --fail .
+
+      - name: statix（アンチパターン検出）
+        # hosts/laptop, hosts/gaming は NixOS 慣用の boot.loader.* スタイルが
+        # W20（repeated keys）の誤検知を引き起こすため除外する。
+        run: nix run nixpkgs#statix -- check . -i "hosts/laptop" "hosts/gaming"
+
   build:
     name: hm-ubuntu ビルド検証
     runs-on: ubuntu-latest
