@@ -20,50 +20,48 @@ return {
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
-      local lspconfig = require('lspconfig')
+      -- 全サーバー共通のケーパビリティ設定（nvim 0.11+ の vim.lsp.config API）
+      vim.lsp.config('*', {
+        capabilities = vim.tbl_deep_extend(
+          'force',
+          require('cmp_nvim_lsp').default_capabilities(),
+          {
+            textDocument = {
+              foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+              }
+            }
+          }
+        ),
+      })
+
       -- biome は mason-lspconfig のハンドラーではなく npx 経由で起動する理由:
       --   mason でインストールした biome はプロジェクトローカルの biome と
       --   バージョンが異なる場合に競合するため、npx でプロジェクトの biome を使う。
-      lspconfig.biome.setup({
+      vim.lsp.config('biome', {
         cmd = { 'npx', 'biome', 'lsp-proxy' },
       })
+      vim.lsp.enable('biome')
 
-      -- setup_handlers() を使わない理由:
-      --   新しい mason-lspconfig では setup_handlers() が削除されており、
-      --   handlers は setup() に直接渡す必要がある。
+      vim.lsp.config('lua_ls', {
+        settings = {
+          Lua = {
+            format = {
+              defaultConfig = {
+                quote_style = 'single',
+              }
+            },
+            diagnostics = {
+              globals = { 'vim' },
+            }
+          }
+        }
+      })
+
       require('mason-lspconfig').setup({
         ensure_installed = { 'lua_ls', 'ts_ls' },
         automatic_installation = true,
-        handlers = {
-          function(server_name)
-            local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-            capabilities.textDocument.foldingRange = {
-              dynamicregistration = false,
-              lineFoldingOnly = true,
-            }
-
-            lspconfig[server_name].setup({
-              capabilities = capabilities,
-            })
-          end,
-          ['lua_ls'] = function()
-            lspconfig.lua_ls.setup({
-              settings = {
-                Lua = {
-                  format = {
-                    defaultConfig = {
-                      quote_style = 'single',
-                    }
-                  },
-                  diagnostics = {
-                    globals = { 'vim' },
-                  }
-                }
-              }
-            })
-          end,
-        }
       })
     end,
   },
@@ -100,7 +98,7 @@ return {
     keys = function()
       return {
         { 'K',  '<Cmd>Lspsaga hover_doc<CR>' },
-        { ',c', '<Cmd>Lspsaga code_action<CR>',         mode = { 'n', 'v' } },
+        { ',c', '<Cmd>Lspsaga code_action<CR>',          mode = { 'n', 'v' } },
         { 'gr', '<Cmd>Lspsaga rename<CR>' },
         { 'gd', '<Cmd>Lspsaga goto_definition<CR>' },
         { 'gD', '<Cmd>Lspsaga peek_definition<CR>' },
