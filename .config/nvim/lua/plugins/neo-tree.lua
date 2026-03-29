@@ -8,9 +8,22 @@ return {
       'MunifTanjim/nui.nvim',
       's1n7ax/nvim-window-picker',
     },
+    event = { 'BufEnter' },
     config = function()
+      -- 引数なしで nvim を起動した場合にカレントディレクトリで neo-tree を自動オープンする。
+      -- ファイルを直接開く場合（nvim file.lua）は開かない。
+      if vim.fn.argc() == 0 and vim.fn.isdirectory(vim.fn.getcwd()) == 1 then
+        vim.cmd('Neotree show focus float')
+      end
+
       require('window-picker').setup()
       require('neo-tree').setup({
+        filesystem = {
+          filtered_items = {
+            visible = false,
+            hide_dotfiles = false,
+          },
+        },
         git_status_async = true,
         git_status = {
           symbols = {
