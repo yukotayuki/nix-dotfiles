@@ -12,13 +12,15 @@ return {
           lua = { lsp_format = 'fallback' },
           sh = { 'shfmt' },
         },
+        -- changed from 500 ms to 5000 ms due to prettier timeout
+        format_on_save = { timeout_ms = 5000 },
         formatters = {
           shfmt = {
-            -- -i 2: 2スペースインデント、-ci: case インデント、-bn: バイナリ演算子を行末に
-            prepend_args = { '-i', '2', '-ci', '-bn' },
+            command = 'shfmt',
+            -- prepend_args を推奨しているけど、append_args じゃないと反映されない
+            append_args = { '-i', '2', '-ci', '-bn' },
           },
         },
-        format_on_save = { timeout_ms = 5000 },
       }
     end
   }
