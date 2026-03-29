@@ -3,6 +3,12 @@ return {
     'williamboman/mason.nvim',
     config = function()
       require('mason').setup()
+      -- shfmt は LSP サーバーではなくフォーマッタのため mason-lspconfig ではなく
+      -- mason の MasonInstall で管理する。conform.lua の sh フォーマッタとセットで機能する。
+      local mr = require('mason-registry')
+      if not mr.is_installed('shfmt') then
+        vim.cmd('MasonInstall shfmt')
+      end
     end
   },
   {
@@ -13,7 +19,7 @@ return {
       'hrsh7th/nvim-cmp',
       'hrsh7th/cmp-nvim-lsp',
     },
-    config = function(_, opts)
+    config = function()
       local lspconfig = require('lspconfig')
       -- biome は mason-lspconfig のハンドラーではなく npx 経由で起動する理由:
       --   mason でインストールした biome はプロジェクトローカルの biome と
@@ -22,47 +28,44 @@ return {
         cmd = { 'npx', 'biome', 'lsp-proxy' },
       })
 
-      require('mason-lspconfig').setup(opts)
-      require('mason-lspconfig').setup_handlers({
-        function(server_name)
-          local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      -- setup_handlers() を使わない理由:
+      --   新しい mason-lspconfig では setup_handlers() が削除されており、
+      --   handlers は setup() に直接渡す必要がある。
+      require('mason-lspconfig').setup({
+        ensure_installed = { 'lua_ls', 'ts_ls' },
+        automatic_installation = true,
+        handlers = {
+          function(server_name)
+            local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-          capabilities.textDocument.foldingRange = {
-            dynamicregistration = false,
-            lineFoldingOnly = true,
-          }
+            capabilities.textDocument.foldingRange = {
+              dynamicregistration = false,
+              lineFoldingOnly = true,
+            }
 
-          lspconfig[server_name].setup({
-            capabilities = capabilities,
-          })
-        end,
-        ['lua_ls'] = function()
-          lspconfig.lua_ls.setup({
-            settings = {
-              Lua = {
-                format = {
-                  defaultConfig = {
-                    quote_style = 'single',
+            lspconfig[server_name].setup({
+              capabilities = capabilities,
+            })
+          end,
+          ['lua_ls'] = function()
+            lspconfig.lua_ls.setup({
+              settings = {
+                Lua = {
+                  format = {
+                    defaultConfig = {
+                      quote_style = 'single',
+                    }
+                  },
+                  diagnostics = {
+                    globals = { 'vim' },
                   }
-                },
-                diagnostics = {
-                  globals = { 'vim' },
                 }
               }
-            }
-          })
-        end,
+            })
+          end,
+        }
       })
     end,
-    opts = {
-      ensure_installed = {
-        'lua_ls',
-        'ts_ls',
-        -- shfmt は LSP サーバーではなくフォーマッタ。conform.lua の sh フォーマッタとセットで機能する。
-        'shfmt',
-      },
-      automatic_installation = true,
-    }
   },
   {
     'neovim/nvim-lspconfig',
