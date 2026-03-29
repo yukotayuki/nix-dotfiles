@@ -7,30 +7,42 @@ Apple Silicon Mac および Ubuntu (Linux) 向けの個人 dotfiles。nix-darwin
 | ツール | 管理方法 |
 |--------|---------|
 | パッケージ全般 | home-manager / nix-darwin |
-| システム設定 | nix-darwin（macOS のみ） |
+| システム設定 | nix-darwin（1台目 Mac のみ） |
+| GUI アプリ（2台目 Mac） | Brewfile（`brew bundle`） |
 | Nix 自体 | Determinate Systems インストーラー |
 | Homebrew 本体 | bootstrap.sh でインストール（macOS のみ） |
 
 ## セットアップ
 
-新しいマシンでは以下の1コマンドで完結する。macOS / Ubuntu どちらでも同じコマンドで動作する。
+ターゲットを引数で指定して実行する。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh
+# 1台目 Mac（nix-darwin + home-manager）
+curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- darwin@arm
+
+# 2台目 Mac（home-manager のみ + brew bundle）
+curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-darwin@arm
+
+# Ubuntu (x86_64)
+curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-ubuntu
 ```
 
-### macOS (Apple Silicon)
-
-実行順序：
+### darwin@arm（1台目 Mac）
 
 1. Nix インストール（Determinate Systems）
 2. Homebrew インストール
 3. dotfiles clone（`~/dotfiles`）
 4. `darwin-rebuild switch` で全適用
 
-### Ubuntu (Linux, x86_64)
+### hm-darwin@arm（2台目 Mac）
 
-実行順序：
+1. Nix インストール（Determinate Systems）
+2. Homebrew インストール
+3. dotfiles clone（`~/dotfiles`）
+4. `home-manager switch` で全適用
+5. `brew bundle` で GUI アプリを適用（`Brewfile`）
+
+### hm-ubuntu（Ubuntu）
 
 1. Nix インストール（Determinate Systems）
 2. dotfiles clone（`~/dotfiles`）
@@ -49,7 +61,7 @@ curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootst
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-> GUI アプリの Claude は darwin-switch で自動インストールされる（macOS のみ）。
+> GUI アプリの Claude は Brewfile（2台目 Mac）または darwin-switch（1台目 Mac）で自動インストールされる。
 > CLI の Claude Code は更新頻度が高いため管理対象外としている。
 
 ## 日常的な操作
@@ -57,8 +69,11 @@ curl -fsSL https://claude.ai/install.sh | bash
 設定変更後は以下のエイリアスで適用する。
 
 ```bash
-# macOS
-darwin-switch   # sudo darwin-rebuild switch --flake "$DOTDIR#darwin@arm" の短縮形
+# 1台目 Mac（nix-darwin）
+darwin-switch      # sudo darwin-rebuild switch --flake "$DOTDIR#darwin@arm" の短縮形
+
+# 2台目 Mac（home-manager のみ）
+hm-darwin-switch   # home-manager switch --flake "$DOTDIR#hm-darwin@arm" の短縮形
 
 # Ubuntu
 nix run home-manager -- switch --flake "$DOTDIR#hm-ubuntu"
