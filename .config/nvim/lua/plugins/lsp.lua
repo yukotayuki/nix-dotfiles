@@ -3,6 +3,12 @@ return {
     'williamboman/mason.nvim',
     config = function()
       require('mason').setup()
+      -- shfmt は LSP サーバーではなくフォーマッタのため mason-lspconfig ではなく
+      -- mason の MasonInstall で管理する。conform.lua の sh フォーマッタとセットで機能する。
+      local mr = require('mason-registry')
+      if not mr.is_installed('shfmt') then
+        vim.cmd('MasonInstall shfmt')
+      end
     end
   },
   {
@@ -19,6 +25,15 @@ return {
           function(server_name)
             require('lspconfig')[server_name].setup({
               capabilities = capabilities,
+            })
+          end,
+          -- biome は mason-lspconfig のハンドラーではなく npx 経由で起動する理由:
+          --   mason でインストールした biome はプロジェクトローカルの biome と
+          --   バージョンが異なる場合に競合するため、npx でプロジェクトの biome を使う。
+          ['biome'] = function()
+            require('lspconfig').biome.setup({
+              capabilities = capabilities,
+              cmd = { 'npx', 'biome', 'lsp-proxy' },
             })
           end,
         },
