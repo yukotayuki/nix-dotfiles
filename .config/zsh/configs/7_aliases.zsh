@@ -15,7 +15,9 @@ alias vim='nvim'
 alias g='git'
 
 # tmux
-alias tsource='tmux source-file ~/.tmux.conf'
+# ~/.tmux.conf を使わない理由:
+#   home-manager の programs.tmux は ~/.config/tmux/tmux.conf に設定を生成する。
+alias tsource='tmux source-file ~/.config/tmux/tmux.conf'
 
 # docker compose
 dc() {
