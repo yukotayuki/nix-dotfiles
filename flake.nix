@@ -92,6 +92,7 @@
       homeConfigurations = {
         "hm-darwin@arm" = mkHomeConfig {
           system = "aarch64-darwin";
+          extraModules = [ ./hosts/macos/home-configuration.nix ];
         };
         hm-darwin = mkHomeConfig {
           system = "x86_64-darwin";

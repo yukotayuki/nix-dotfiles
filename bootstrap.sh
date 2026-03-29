@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # bootstrap.sh — nix-dotfiles セットアップスクリプト
-# Usage: curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh
+#
+# Usage:
+#   curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh \
+#     | sh -s -- <target>
+#
+# Targets:
+#   darwin@arm      Apple Silicon Mac（nix-darwin + home-manager）
+#   hm-darwin@arm   Apple Silicon Mac（home-manager のみ + brew bundle）
+#   hm-ubuntu       Ubuntu x86_64（home-manager のみ）
 # ==============================================================================
 set -euo pipefail
 
@@ -14,41 +22,46 @@ DOTFILES_DIR="$HOME/dotfiles"
 # ------------------------------------------------------------------------------
 # ヘルパー
 # ------------------------------------------------------------------------------
-info()    { echo "$(tput bold)$(tput setaf 4)➜$(tput sgr0)  $*"; }
+info() { echo "$(tput bold)$(tput setaf 4)➜$(tput sgr0)  $*"; }
 success() { echo "$(tput bold)$(tput setaf 2)✓$(tput sgr0)  $*"; }
-warn()    { echo "$(tput bold)$(tput setaf 3)!$(tput sgr0)  $*"; }
-die()     { echo "$(tput bold)$(tput setaf 1)✗$(tput sgr0)  $*" >&2; exit 1; }
+warn() { echo "$(tput bold)$(tput setaf 3)!$(tput sgr0)  $*"; }
+die() {
+  echo "$(tput bold)$(tput setaf 1)✗$(tput sgr0)  $*" >&2
+  exit 1
+}
 
 # ------------------------------------------------------------------------------
-# OS・アーキテクチャ検出
-# flake ターゲットをここで決定することで、以降のステップを OS 分岐なしに書ける。
+# ターゲット指定（必須）
 # ------------------------------------------------------------------------------
-OS="$(uname)"
-ARCH="$(uname -m)"
+TARGET="${1:-}"
+if [ -z "$TARGET" ]; then
+  die "ターゲットを指定してください。
+Usage: bootstrap.sh <target>
+Targets:
+  darwin@arm      Apple Silicon Mac（nix-darwin + home-manager）
+  hm-darwin@arm   Apple Silicon Mac（home-manager のみ + brew bundle）
+  hm-ubuntu       Ubuntu x86_64（home-manager のみ）"
+fi
 
-case "$OS" in
-  Darwin)
+case "$TARGET" in
+  darwin@arm)
     IS_DARWIN=true
-    if [ "$ARCH" = "arm64" ]; then
-      DARWIN_TARGET="darwin@arm"
-    else
-      warn "arm64 以外のアーキテクチャです。DARWIN_TARGET を確認してください"
-      DARWIN_TARGET="darwin"
-    fi
+    USE_DARWIN_REBUILD=true
+    USE_BREW_BUNDLE=false
     ;;
-  Linux)
+  hm-darwin@arm)
+    IS_DARWIN=true
+    USE_DARWIN_REBUILD=false
+    USE_BREW_BUNDLE=true
+    ;;
+  hm-ubuntu)
     IS_DARWIN=false
-    if [ "$ARCH" = "x86_64" ]; then
-      HM_TARGET="hm-ubuntu"
-    elif [ "$ARCH" = "aarch64" ]; then
-      # ARM Linux 向けターゲットが追加されたら更新する
-      die "aarch64 Linux は未対応です"
-    else
-      die "未対応のアーキテクチャです: $ARCH"
-    fi
+    USE_DARWIN_REBUILD=false
+    USE_BREW_BUNDLE=false
     ;;
   *)
-    die "未対応の OS です: $OS"
+    die "未知のターゲットです: $TARGET
+Targets: darwin@arm | hm-darwin@arm | hm-ubuntu"
     ;;
 esac
 
@@ -101,7 +114,6 @@ if [ -d "$DOTFILES_DIR/.git" ]; then
   git -C "$DOTFILES_DIR" pull --ff-only || warn "pull に失敗しました（ローカルに変更がある可能性）。スキップします"
 else
   info "dotfiles をクローンします..."
-  # git がなければ nix の git を使う
   clone_repo() {
     local git_cmd="$1"
     info "SSH でクローンを試みます..."
@@ -125,17 +137,27 @@ fi
 
 # ------------------------------------------------------------------------------
 # Step 4: 設定を適用
-# macOS: nix-darwin switch
-# Linux: home-manager switch（スタンドアロン）
+# darwin@arm:    nix-darwin switch
+# hm-darwin@arm: home-manager switch
+# hm-ubuntu:     home-manager switch
 # ------------------------------------------------------------------------------
 cd "$DOTFILES_DIR"
 
-if $IS_DARWIN; then
+if $USE_DARWIN_REBUILD; then
   info "nix-darwin を適用します（初回は時間がかかります）..."
-  nix run nix-darwin -- switch --flake ".#${DARWIN_TARGET}"
+  nix run nix-darwin -- switch --flake ".#${TARGET}"
 else
   info "home-manager を適用します（初回は時間がかかります）..."
-  nix run home-manager -- switch --flake ".#${HM_TARGET}"
+  nix run home-manager -- switch --flake ".#${TARGET}"
+fi
+
+# ------------------------------------------------------------------------------
+# Step 5: Brewfile 適用（hm-darwin@arm のみ）
+# ------------------------------------------------------------------------------
+if $USE_BREW_BUNDLE; then
+  info "Brewfile を適用します..."
+  brew bundle --file "$DOTFILES_DIR/Brewfile"
+  success "Brewfile 適用完了"
 fi
 
 # ------------------------------------------------------------------------------

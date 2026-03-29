@@ -4,7 +4,8 @@
 
 | マシン | flake ターゲット |
 |--------|----------------|
-| Apple Silicon Mac (aarch64-darwin) | `darwin@arm` |
+| Apple Silicon Mac 1台目（nix-darwin） | `darwin@arm` |
+| Apple Silicon Mac 2台目（home-manager のみ） | `hm-darwin@arm` |
 | Ubuntu x86_64 (Linux) | `hm-ubuntu` |
 
 - dotfiles の配置場所: `~/dotfiles`
@@ -30,21 +31,33 @@
 `"zap"` にすると宣言にない既存パッケージが全部消えるので注意。
 
 ## bootstrap.sh
-リポジトリルートに置いてある。新しいマシンへのセットアップはこの1行で完結する（macOS / Ubuntu 共通）：
+リポジトリルートに置いてある。ターゲットを引数で指定して実行する：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh
+# Apple Silicon Mac 1台目（nix-darwin）
+curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- darwin@arm
+
+# Apple Silicon Mac 2台目（home-manager のみ）
+curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-darwin@arm
+
+# Ubuntu x86_64
+curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-ubuntu
 ```
 
-OS を自動検出して適切なターゲットを選択する。
-
-**macOS (Apple Silicon) の実行順序：**
+**`darwin@arm` の実行順序：**
 1. Nix インストール（Determinate Systems）
 2. Homebrew インストール
 3. dotfiles clone（`~/dotfiles` へ）
 4. `darwin-rebuild switch` で全適用
 
-**Ubuntu (x86_64) の実行順序：**
+**`hm-darwin@arm` の実行順序：**
+1. Nix インストール（Determinate Systems）
+2. Homebrew インストール
+3. dotfiles clone（`~/dotfiles` へ）
+4. `home-manager switch` で全適用
+5. `brew bundle` で GUI アプリを適用（`Brewfile`）
+
+**`hm-ubuntu` の実行順序：**
 1. Nix インストール（Determinate Systems）
 2. dotfiles clone（`~/dotfiles` へ）
 3. `home-manager switch` で全適用
