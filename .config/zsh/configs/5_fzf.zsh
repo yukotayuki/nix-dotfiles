@@ -8,12 +8,13 @@ elif type fzf &>/dev/null; then
 fi
 
 # ghq + fzf: リポジトリへ移動 (^Y)
-# ghq list ではなく ghq list -p で絶対パスを取得する理由:
-#   $REPODIR が未定義の場合に誤ったパスへ cd してしまうのを避けるため。
+# fzf の表示は ghq list（相対パス）にして視認性を保ちつつ、
+# cd 先は $(ghq root)/$selected で絶対パスに変換する。
+# ghq list -p を表示に使わない理由: 絶対パスは長くて fzf で見づらい。
 function fzf-cd-git-repository() {
-    local selected=$(ghq list -p | fzf)
+    local selected=$(ghq list | fzf)
     if [[ -n $selected ]]; then
-        cd $selected
+        cd "$(ghq root)/$selected"
     fi
     zle reset-prompt
 }
