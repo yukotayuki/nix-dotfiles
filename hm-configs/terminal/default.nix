@@ -1,6 +1,6 @@
-{ config, pkgs, lib, isNixOS, ... }:
+{ lib, isNixOS, ... }:
 
-lib.mkIf (isNixOS)
+lib.mkIf isNixOS
 {
   programs = {
     wezterm.enable = true;

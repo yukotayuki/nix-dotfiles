@@ -1,4 +1,4 @@
-{ config, pkgs, lib, dotDir, ... }:
+{ pkgs, lib, dotDir, ... }:
 
 let
   inherit (pkgs.stdenv) isLinux;

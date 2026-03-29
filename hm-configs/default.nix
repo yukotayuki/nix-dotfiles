@@ -1,4 +1,4 @@
-{ config, pkgs, lib, isNixOS, ... }:
+{ config, lib, isNixOS, ... }:
 
 let
   dotDir = "${config.home.homeDirectory}/dotfiles";
@@ -6,9 +6,11 @@ let
 
 in
 {
-  _module.args.dotDir = dotDir;
-  _module.args.repoDir = repoDir;
-  _module.args.isNixOS = isNixOS;
+  _module.args = {
+    inherit dotDir;
+    inherit repoDir;
+    inherit isNixOS;
+  };
 
   # dotfiles リポジトリを ghq のディレクトリ構造上に symlink する。
   # ghq get ではなく手動 clone で ~/dotfiles に置いているが、

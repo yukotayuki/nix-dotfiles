@@ -1,6 +1,6 @@
-{ config, pkgs, lib, isNixOS, ... }:
+{ pkgs, lib, isNixOS, ... }:
 
-lib.mkIf (isNixOS)
+lib.mkIf isNixOS
 {
   home.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "Noto" ]; })

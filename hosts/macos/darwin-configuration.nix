@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, ... }:
 
 {
   environment.shells = [ pkgs.zsh ];
@@ -26,15 +26,18 @@
     ];
   };
 
-  system.defaults = {
-    NSGlobalDomain = {
-      # ホールドで文字選択候補を出さず、キーリピートを有効にする
-      ApplePressAndHoldEnabled = false;
+  system = {
+    defaults = {
+      NSGlobalDomain = {
+        # ホールドで文字選択候補を出さず、キーリピートを有効にする
+        ApplePressAndHoldEnabled = false;
+      };
+      dock = {
+        autohide = true;
+        tilesize = 43;
+      };
     };
-    dock = {
-      autohide = true;
-      tilesize = 43;
-    };
+    stateVersion = 5;
   };
 
   # nix.settings / nix.extraOptions を使わない理由:
@@ -61,5 +64,4 @@
     };
   };
 
-  system.stateVersion = 5;
 }

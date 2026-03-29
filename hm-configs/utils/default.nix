@@ -1,4 +1,4 @@
-{ config, pkgs, lib, isNixOS, ... }:
+{ pkgs, lib, isNixOS, ... }:
 
 let
   inherit (pkgs.stdenv) isLinux;
