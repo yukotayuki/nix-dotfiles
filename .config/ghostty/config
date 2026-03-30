@@ -3,7 +3,7 @@ theme = nord
 # homebrew で管理するため自動アップデート通知を無効にする。
 auto-update = off
 
-font-family = UDEV Gothic 35NF
+font-family = NotoMono Nerd Font Mono
 font-size = 18
 
 # ctrl+[ を ESC として送信する。

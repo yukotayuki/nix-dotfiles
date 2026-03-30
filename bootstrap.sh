@@ -148,7 +148,9 @@ if $USE_DARWIN_REBUILD; then
   nix run nix-darwin -- switch --flake ".#${TARGET}"
 else
   info "home-manager を適用します（初回は時間がかかります）..."
-  nix run home-manager -- switch --flake ".#${TARGET}"
+  # standalone home-manager では home.backupFileExtension が使えないため、
+  # -b オプションで既存ファイルを .bak へ退避する
+  nix run home-manager -- switch --flake ".#${TARGET}" -b bak
 fi
 
 # ------------------------------------------------------------------------------
