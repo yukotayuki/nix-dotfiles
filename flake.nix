@@ -28,10 +28,12 @@
         # ホスト固有の設定ファイルを受け取る。
         # ホストが増えても flake.nix を肥大化させずに差分を管理できる。
         , extraModules ? []
+        # nixpkgs の openssh を使うか（FIDO2 対応が必要なホストのみ true）
+        , useNixOpenssh ? true
         }:
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { isNixOS = false; };
+          extraSpecialArgs = { isNixOS = false; inherit useNixOpenssh; };
 
           modules = [
             ./home.nix
@@ -93,6 +95,8 @@
         "hm-darwin@arm" = mkHomeConfig {
           system = "aarch64-darwin";
           extraModules = [ ./hosts/macos/home-configuration.nix ];
+          # macOS 標準の SSH を優先（FIDO2 不要）
+          useNixOpenssh = false;
         };
         hm-darwin = mkHomeConfig {
           system = "x86_64-darwin";

@@ -18,6 +18,7 @@
     ];
     casks = [
       "claude"
+      "font-noto-nerd-font"
       "font-udev-gothic-nf"
       "ghostty"
       "karabiner-elements"
