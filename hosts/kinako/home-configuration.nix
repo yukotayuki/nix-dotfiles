@@ -1,5 +1,10 @@
-_:
+{ pkgs, ... }:
 
 {
-  # kinako 固有のパッケージ・設定をここに追加する。
+  home.packages = with pkgs; [
+    deno
+    kubectl
+    nim
+    shellcheck
+  ];
 }
