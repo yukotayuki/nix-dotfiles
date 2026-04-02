@@ -38,5 +38,55 @@ return {
         end
       })
     end
-  }
+  },
+  {
+    'sindrets/diffview.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    cmd = { 'DiffviewOpen', 'DiffviewFileHistory' },
+    keys = {
+      { '<Space>gd', '<cmd>DiffviewOpen<cr>', desc = 'Diffview: Open' },
+      { '<Space>gD', ':DiffviewOpen ', desc = 'Diffview: Open (branch)' },
+      { '<Space>gh', '<cmd>DiffviewFileHistory %<cr>', desc = 'Diffview: File history' },
+      { '<Space>gH', '<cmd>DiffviewFileHistory<cr>', desc = 'Diffview: All history' },
+      { '<Space>gq', '<cmd>DiffviewClose<cr>', desc = 'Diffview: Close' },
+    },
+    config = function()
+      require('diffview').setup({
+        view = {
+          merge_tool = {
+            layout = 'diff3_mixed',
+          },
+        },
+        file_panel = {
+          win_config = {
+            position = 'left',
+            width = 35,
+          },
+          listing_style = 'tree',
+          tree_options = {
+            flatten_dirs = true,
+            folder_statuses = 'only_folded',
+          },
+        },
+        -- ファイルパネルのフォールドをデフォルトで開いた状態にする
+        hooks = {
+          diff_buf_win_enter = function()
+            vim.opt_local.foldenable = false
+          end,
+          -- 最初のファイルを自動で開く
+          view_opened = function()
+            local actions = require('diffview.actions')
+            actions.goto_file_edit()
+          end,
+        },
+      })
+      -- 背景をベタ塗りではなく透過的に
+      vim.api.nvim_set_hl(0, 'DiffviewDiffAddAsDelete', { bg = 'none', fg = '#bf616a', strikethrough = true })
+      vim.api.nvim_set_hl(0, 'DiffviewDiffDelete', { bg = 'none', fg = '#4c566a' })
+      vim.api.nvim_set_hl(0, 'DiffAdd', { bg = '#3b4252', fg = 'none' })
+      vim.api.nvim_set_hl(0, 'DiffChange', { bg = '#3b4252', fg = 'none' })
+      vim.api.nvim_set_hl(0, 'DiffDelete', { bg = 'none', fg = '#4c566a' })
+      vim.api.nvim_set_hl(0, 'DiffText', { bg = '#434c5e', fg = 'none' })
+    end,
+  },
 }
