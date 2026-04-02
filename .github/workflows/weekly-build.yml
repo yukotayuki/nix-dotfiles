@@ -1,0 +1,28 @@
+name: Weekly build
+
+on:
+  schedule:
+    # 毎週月曜 09:30 JST（00:30 UTC）に実行（flake-update の後）
+    - cron: "30 0 * * 1"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 全設定のフルビルド
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Nix をインストール
+        uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
+
+      - name: Nix キャッシュを有効化
+        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+
+      - name: hm-ubuntu をビルド
+        run: nix build .#homeConfigurations.hm-ubuntu.activationPackage --no-link
+
+      - name: hm-darwin@arm をビルド
+        # macOS 固有のパッケージは Linux でビルドできないため --dry-run で依存グラフの検証のみ行う
+        run: nix build .#homeConfigurations."hm-darwin@arm".activationPackage --no-link --dry-run
