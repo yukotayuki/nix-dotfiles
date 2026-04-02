@@ -6,7 +6,7 @@ let
 in
 {
   home = {
-    stateVersion = "22.11";
+    stateVersion = "25.05";
     sessionVariables = {
       EDITOR = "nvim";
     };
