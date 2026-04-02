@@ -27,7 +27,7 @@ jobs:
         run: nix flake update
 
       - name: PR を作成
-        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d63e # v7
+        uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
           commit-message: "chore(nix): nix flake update"
           title: "chore(nix): 週次 nix flake update"
