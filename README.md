@@ -2,58 +2,64 @@
 
 Apple Silicon Mac および Ubuntu (Linux) 向けの個人 dotfiles。nix-darwin + home-manager で管理。
 
-## 構成
+## 端末
+
+| 端末 | 名前 | 構成 |
+|------|------|------|
+| Apple Silicon Mac 1台目 | kinako | nix-darwin + home-manager |
+| Apple Silicon Mac 2台目 | mochi | home-manager + brew bundle |
+| Ubuntu x86_64 | canele | home-manager |
+
+## 管理方針
 
 | ツール | 管理方法 |
 |--------|---------|
 | パッケージ全般 | home-manager / nix-darwin |
-| システム設定 | nix-darwin（1台目 Mac のみ） |
-| GUI アプリ（2台目 Mac） | Brewfile（`brew bundle`） |
+| システム設定 | nix-darwin（kinako のみ） |
+| GUI アプリ（mochi） | Brewfile（`brew bundle`） |
 | Nix 自体 | Determinate Systems インストーラー |
-| Homebrew 本体 | bootstrap.sh でインストール（macOS のみ） |
+| Homebrew 本体 | 手動インストール（macOS のみ） |
 
 ## セットアップ
 
-ターゲットを引数で指定して実行する。
+### kinako（Apple Silicon Mac, nix-darwin）
 
 ```bash
-# 1台目 Mac（nix-darwin + home-manager）
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- darwin@arm
+# 1. Nix インストール（Determinate Systems）
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
 
-# 2台目 Mac（home-manager のみ + brew bundle）
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-darwin@arm
+# 2. Homebrew インストール
+# nix-darwin の homebrew モジュールは Homebrew が既に入っていることを前提とする
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Ubuntu (x86_64)
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-ubuntu
+# 3. dotfiles 適用
+nix run github:yukotayuki/nix-dotfiles#setup-kinako
 ```
 
-### darwin@arm（1台目 Mac）
+### mochi（Apple Silicon Mac, home-manager のみ）
 
-1. Nix インストール（Determinate Systems）
-2. Homebrew インストール
-3. dotfiles clone（`~/dotfiles`）
-4. `darwin-rebuild switch` で全適用
+```bash
+# 1. Nix インストール（同上）
 
-### hm-darwin@arm（2台目 Mac）
+# 2. Homebrew インストール（同上）
 
-1. Nix インストール（Determinate Systems）
-2. Homebrew インストール
-3. dotfiles clone（`~/dotfiles`）
-4. `home-manager switch` で全適用
-5. `brew bundle` で GUI アプリを適用（`Brewfile`）
+# 3. dotfiles 適用（home-manager switch + brew bundle）
+nix run github:yukotayuki/nix-dotfiles#setup-mochi
+```
 
-### hm-ubuntu（Ubuntu）
+### canele（Ubuntu x86_64）
 
-1. Nix インストール（Determinate Systems）
-2. dotfiles clone（`~/dotfiles`）
-3. `home-manager switch` で全適用
+```bash
+# 1. Nix インストール（同上）
+
+# 2. dotfiles 適用
+nix run github:yukotayuki/nix-dotfiles#setup-canele
+```
 
 > SSH キーが登録済みであれば SSH で clone し、未登録の場合は HTTPS にフォールバックする。
 > HTTPS で clone した場合は後から `git remote set-url origin git@github.com:yukotayuki/nix-dotfiles.git` で変更できる。
 
 ## セットアップ後の任意手順
-
-以下は用途に応じて手動でインストールする。
 
 ### Claude Code（CLI）
 
@@ -61,7 +67,7 @@ curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootst
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-> GUI アプリの Claude は Brewfile（2台目 Mac）または darwin-switch（1台目 Mac）で自動インストールされる。
+> GUI アプリの Claude は darwin-switch（kinako）で自動インストールされる。
 > CLI の Claude Code は更新頻度が高いため管理対象外としている。
 
 ## 日常的な操作
@@ -69,12 +75,12 @@ curl -fsSL https://claude.ai/install.sh | bash
 設定変更後は以下のエイリアスで適用する。
 
 ```bash
-# 1台目 Mac（nix-darwin）
-darwin-switch      # sudo darwin-rebuild switch --flake "$DOTDIR#darwin@arm" の短縮形
+# kinako（nix-darwin）
+darwin-switch      # sudo darwin-rebuild switch --flake "$DOTDIR#kinako" の短縮形
 
-# 2台目 Mac（home-manager のみ）
-hm-darwin-switch   # home-manager switch --flake "$DOTDIR#hm-darwin@arm" の短縮形
+# mochi（home-manager のみ）
+hm-switch          # home-manager switch --flake "$DOTDIR#mochi" の短縮形
 
-# Ubuntu
-nix run home-manager -- switch --flake "$DOTDIR#hm-ubuntu"
+# canele（Ubuntu）
+nix run home-manager -- switch --flake "$DOTDIR#canele"
 ```
