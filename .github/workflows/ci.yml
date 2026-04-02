@@ -28,24 +28,8 @@ jobs:
         # W20（repeated keys）の誤検知を引き起こすため除外する。
         run: nix run nixpkgs#statix -- check . -i "hosts/laptop" "hosts/gaming"
 
-  build:
-    name: hm-ubuntu ビルド検証
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
-
-      - name: Nix をインストール
-        uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
-
-      - name: Nix キャッシュを有効化
-        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
-
-      - name: hm-ubuntu をビルド
-        run: nix build .#homeConfigurations.hm-ubuntu.activationPackage --no-link
-
-  eval-darwin:
-    name: Darwin 設定の評価検証
+  eval:
+    name: 全設定の評価検証
     runs-on: ubuntu-latest
 
     steps:
@@ -64,3 +48,6 @@ jobs:
 
       - name: hm-darwin@arm を評価
         run: nix eval .#homeConfigurations."hm-darwin@arm".activationPackage.drvPath
+
+      - name: hm-ubuntu を評価
+        run: nix eval .#homeConfigurations.hm-ubuntu.activationPackage.drvPath

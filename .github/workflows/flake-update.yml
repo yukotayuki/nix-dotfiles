@@ -23,6 +23,10 @@ jobs:
       - name: Nix キャッシュを有効化
         uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
 
+      - name: 日付を取得
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
       - name: nix flake update
         run: nix flake update
 
@@ -36,6 +40,6 @@ jobs:
 
             変更があった場合のみこの PR が作成されます。
             CI が通ったことを確認してからマージしてください。
-          branch: chore/flake-update
+          branch: chore/flake-update-${{ steps.date.outputs.date }}
           delete-branch: true
           labels: dependencies
