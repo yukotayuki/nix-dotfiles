@@ -84,7 +84,7 @@
                 # abort せずに <file>.bak へ退避してから上書きする。
                 backupFileExtension = "bak";
                 users."${username}" = import ./home.nix;
-                extraSpecialArgs = { isNixOS = false; };
+                extraSpecialArgs = { isNixOS = false; useNixOpenssh = true; };
               };
             }
           ] ++ extraModules;

@@ -43,3 +43,24 @@ jobs:
 
       - name: hm-ubuntu をビルド
         run: nix build .#homeConfigurations.hm-ubuntu.activationPackage --no-link
+
+  eval-darwin:
+    name: Darwin 設定の評価検証
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Nix をインストール
+        uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a # v21
+
+      - name: Nix キャッシュを有効化
+        uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
+
+      - name: darwin@arm を評価
+        # nix-darwin は macOS でしかビルドできないため eval のみ実施。
+        # 評価エラー（型ミス・未定義の引数など）はここで検知できる。
+        run: nix eval .#darwinConfigurations."darwin@arm".system.drvPath
+
+      - name: hm-darwin@arm を評価
+        run: nix eval .#homeConfigurations."hm-darwin@arm".activationPackage.drvPath
