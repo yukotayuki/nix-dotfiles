@@ -7,4 +7,6 @@
     nim
     shellcheck
   ];
+
+  programs.direnv.nix-direnv.enable = true;
 }
