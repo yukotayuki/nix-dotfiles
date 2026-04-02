@@ -16,3 +16,6 @@ opt.softtabstop = 4
 opt.textwidth = 80
 opt.colorcolumn = '+1'
 opt.clipboard:append({ vim.fn.has('mac') == 1 and 'unnamed' or 'unnamedplus' })
+
+-- modeline を無効化（CVE-2019-12735 等の脆弱性対策）
+opt.modeline = false
