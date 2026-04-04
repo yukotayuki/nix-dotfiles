@@ -1,6 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
+  networking = {
+    computerName  = config.hostSpec.name;
+    hostName      = config.hostSpec.name;
+    localHostName = config.hostSpec.name;
+  };
+
   environment.shells = [ pkgs.zsh ];
 
   # homebrew.enable など一部のオプションはプライマリユーザーが必要。
