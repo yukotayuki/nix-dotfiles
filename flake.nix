@@ -122,7 +122,11 @@
       darwinConfigurations = {
         kinako = mkDarwinConfig {
           system = "aarch64-darwin";
-          extraModules = [ ./hosts/kinako/darwin-configuration.nix ];
+          extraModules = [
+            ./modules/hostSpec.nix
+            { hostSpec.name = "kinako"; hostSpec.enableYubikey = true; }
+            ./hosts/kinako/darwin-configuration.nix
+          ];
           hmModules = [
             ./modules/hostSpec.nix
             ./hosts/kinako/home-configuration.nix
