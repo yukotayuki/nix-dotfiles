@@ -2,11 +2,11 @@
 
 ## 環境
 
-| マシン | flake ターゲット |
-|--------|----------------|
-| Apple Silicon Mac 1台目（nix-darwin） | `darwin@arm` |
-| Apple Silicon Mac 2台目（home-manager のみ） | `hm-darwin@arm` |
-| Ubuntu x86_64 (Linux) | `hm-ubuntu` |
+| マシン | ホスト名 | 構成 | flake ターゲット |
+|--------|---------|------|----------------|
+| Apple Silicon Mac 1台目 | kinako | nix-darwin + home-manager | `darwinConfigurations.kinako` |
+| Apple Silicon Mac 2台目 | mochi | home-manager + brew bundle | `homeConfigurations.mochi` |
+| Ubuntu x86_64 (Linux) | canele | home-manager | `homeConfigurations.canele` |
 
 - dotfiles の配置場所: `~/dotfiles`
 
@@ -14,56 +14,60 @@
 
 ### nix で管理するもの
 - パッケージ全般（home-manager / nix-darwin）
-- Homebrew 自体のパッケージ管理（nix-darwin の homebrew モジュール経由）
-- システム設定（nix-darwin）
+- Homebrew 自体のパッケージ管理（nix-darwin の homebrew モジュール経由、kinako のみ）
+- システム設定（nix-darwin、kinako のみ）
 
 ### nix の外で管理するもの（意図的）
 | ツール | 方法 | 理由 |
 |--------|------|------|
 | Nix 自体 | Determinate Systems インストーラー | bootstrap の起点なので仕方ない |
-| Homebrew 本体 | bootstrap.sh でインストール（macOS のみ） | nix-darwin は Homebrew がすでに入っていることを前提とするため |
+| Homebrew 本体 | 手動インストール（macOS のみ） | nix-darwin は Homebrew がすでに入っていることを前提とするため |
 | Claude Code | curl インストール（手動） | 更新頻度が高く nix 管理のコストが見合わない |
 | gcloud | Homebrew 経由 | nixpkgs の更新が追いつかないため |
+| GUI アプリ（mochi） | Brewfile（`brew bundle`） | home-manager のみ構成のため darwin homebrew モジュールが使えない |
 
 ### Homebrew の cleanup 設定
-`homebrew.onActivation.cleanup = "uninstall"` に設定済み。
+`homebrew.onActivation.cleanup = "uninstall"` に設定済み（kinako のみ）。
 宣言から外したパッケージは次回 `darwin-switch` 時に自動削除される。
 `"zap"` にすると宣言にない既存パッケージが全部消えるので注意。
 
-## bootstrap.sh
-リポジトリルートに置いてある。ターゲットを引数で指定して実行する：
+## セットアップ
+
+### 初回セットアップ（`nix run` で一発適用）
 
 ```bash
-# Apple Silicon Mac 1台目（nix-darwin）
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- darwin@arm
+# kinako（Apple Silicon Mac, nix-darwin）
+# 事前に Nix と Homebrew を手動インストールしてから実行
+nix run github:yukotayuki/nix-dotfiles#setup-kinako
 
-# Apple Silicon Mac 2台目（home-manager のみ）
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-darwin@arm
+# mochi（Apple Silicon Mac, home-manager のみ）
+# 事前に Nix と Homebrew を手動インストールしてから実行
+nix run github:yukotayuki/nix-dotfiles#setup-mochi
 
-# Ubuntu x86_64
-curl -fsSL https://raw.githubusercontent.com/yukotayuki/nix-dotfiles/main/bootstrap.sh | sh -s -- hm-ubuntu
+# canele（Ubuntu x86_64）
+# 事前に Nix を手動インストールしてから実行
+nix run github:yukotayuki/nix-dotfiles#setup-canele
 ```
 
-**`darwin@arm` の実行順序：**
-1. Nix インストール（Determinate Systems）
-2. Homebrew インストール
-3. dotfiles clone（`~/dotfiles` へ）
-4. `darwin-rebuild switch` で全適用
+各 setup app の内容：
+- `setup-kinako`: dotfiles clone → `nix run nix-darwin -- switch --flake .#kinako`
+- `setup-mochi`: dotfiles clone → `home-manager switch` → `brew bundle`
+- `setup-canele`: dotfiles clone → `home-manager switch`
 
-**`hm-darwin@arm` の実行順序：**
-1. Nix インストール（Determinate Systems）
-2. Homebrew インストール
-3. dotfiles clone（`~/dotfiles` へ）
-4. `home-manager switch` で全適用
-5. `brew bundle` で GUI アプリを適用（`Brewfile`）
+## 日常的な操作（設定変更後の適用）
 
-**`hm-ubuntu` の実行順序：**
-1. Nix インストール（Determinate Systems）
-2. dotfiles clone（`~/dotfiles` へ）
-3. `home-manager switch` で全適用
+```bash
+# kinako（nix-darwin）
+darwin-switch      # sudo darwin-rebuild switch --flake "$DOTDIR#kinako" の短縮形
 
-どこから実行しても動く（カレントディレクトリに依存しない）。
+# mochi（home-manager のみ）
+hm-switch          # home-manager switch --flake "$DOTDIR#mochi" の短縮形
 
+# canele（Ubuntu）
+nix run home-manager -- switch --flake "$DOTDIR#canele"
+```
+
+nix ファイル（`*.nix`, `flake.nix`, `flake.lock`）を変更した場合、PR 作成前に必ず対象マシンで switch して動作確認する。
 
 ## 参考リンク
 - Nix インストーラー: https://github.com/DeterminateSystems/nix-installer
