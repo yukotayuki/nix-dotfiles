@@ -41,13 +41,13 @@ jobs:
       - name: Nix キャッシュを有効化
         uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
 
-      - name: darwin@arm を評価
+      - name: kinako を評価
         # nix-darwin は macOS でしかビルドできないため eval のみ実施。
         # 評価エラー（型ミス・未定義の引数など）はここで検知できる。
-        run: nix eval .#darwinConfigurations."darwin@arm".system.drvPath
+        run: nix eval .#darwinConfigurations.kinako.system.drvPath
 
-      - name: hm-darwin@arm を評価
-        run: nix eval .#homeConfigurations."hm-darwin@arm".activationPackage.drvPath
+      - name: mochi を評価
+        run: nix eval .#homeConfigurations.mochi.activationPackage.drvPath
 
-      - name: hm-ubuntu を評価
-        run: nix eval .#homeConfigurations.hm-ubuntu.activationPackage.drvPath
+      - name: canele を評価
+        run: nix eval .#homeConfigurations.canele.activationPackage.drvPath

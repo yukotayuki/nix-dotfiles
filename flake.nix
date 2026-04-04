@@ -16,24 +16,18 @@
 
   outputs = inputs: with inputs;
     let
-      username = "joo";
-
-      homeDirectoryPrefix = pkgs:
-        if pkgs.stdenv.hostPlatform.isDarwin then "/Users" else "/home";
+      vars = import ./vars.nix;
+      inherit (vars) username homeDirectoryPrefix;
 
       mkHomeConfig =
         { system ? "x86_64-linux"
         , pkgs ? (import nixpkgs { inherit system; })
         , homeDirectory ? "${homeDirectoryPrefix pkgs}/${username}"
-        # ホスト固有の設定ファイルを受け取る。
-        # ホストが増えても flake.nix を肥大化させずに差分を管理できる。
         , extraModules ? []
-        # nixpkgs の openssh を使うか（FIDO2 対応が必要なホストのみ true）
-        , useNixOpenssh ? true
         }:
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { isNixOS = false; inherit useNixOpenssh; };
+          extraSpecialArgs = { isNixOS = false; };
 
           modules = [
             ./home.nix
@@ -63,7 +57,7 @@
           ] ++ extraModules;
         };
 
-      mkDarwinConfig = { system ? "x86_64-darwin", extraModules }:
+      mkDarwinConfig = { system ? "x86_64-darwin", extraModules, hmModules ? [] }:
         darwin.lib.darwinSystem {
           inherit system;
           modules = [
@@ -84,7 +78,9 @@
                 # abort せずに <file>.bak へ退避してから上書きする。
                 backupFileExtension = "bak";
                 users."${username}" = import ./home.nix;
-                extraSpecialArgs = { isNixOS = false; useNixOpenssh = true; };
+                extraSpecialArgs = { isNixOS = false; };
+                # ホスト固有の home-manager モジュール（hostSpec 設定など）
+                sharedModules = hmModules;
               };
             }
           ] ++ extraModules;
@@ -92,22 +88,21 @@
     in
     {
       homeConfigurations = {
-        "hm-darwin@arm" = mkHomeConfig {
+        mochi = mkHomeConfig {
           system = "aarch64-darwin";
-          extraModules = [ ./hosts/macos/home-configuration.nix ];
-          # macOS 標準の SSH を優先（FIDO2 不要）
-          useNixOpenssh = false;
+          extraModules = [
+            ./modules/hostSpec.nix
+            ./hosts/mochi/home-configuration.nix
+            { hostSpec.name = "mochi"; }
+          ];
         };
-        hm-darwin = mkHomeConfig {
-          system = "x86_64-darwin";
-        };
-        "hm-linux@arm" = mkHomeConfig {
-          system = "aarch64-linux";
-        };
-        hm-linux = mkHomeConfig {};
-        hm-ubuntu = mkHomeConfig {
+        canele = mkHomeConfig {
           system = "x86_64-linux";
-          extraModules = [ ./hosts/ubuntu/home-configuration.nix ];
+          extraModules = [
+            ./modules/hostSpec.nix
+            ./hosts/canele/home-configuration.nix
+            { hostSpec.name = "canele"; }
+          ];
         };
       };
 
@@ -125,12 +120,69 @@
       };
 
       darwinConfigurations = {
-        "darwin@arm" = mkDarwinConfig {
+        kinako = mkDarwinConfig {
           system = "aarch64-darwin";
-          extraModules = [
-            ./hosts/macos/darwin-configuration.nix
+          extraModules = [ ./hosts/kinako/darwin-configuration.nix ];
+          hmModules = [
+            ./modules/hostSpec.nix
+            ./hosts/kinako/home-configuration.nix
+            { hostSpec.name = "kinako"; hostSpec.enableYubikey = true; }
           ];
         };
+      };
+
+      apps = {
+        "aarch64-darwin" =
+          let
+            pkgs = import nixpkgs { system = "aarch64-darwin"; };
+            git = "${pkgs.git}/bin/git";
+          in
+          {
+            "setup-kinako" = {
+              type = "app";
+              program = "${pkgs.writeShellScript "setup-kinako" ''
+                set -euo pipefail
+                DOTFILES_DIR="$HOME/dotfiles"
+                if [ ! -d "$DOTFILES_DIR/.git" ]; then
+                  ${git} clone "git@github.com:yukotayuki/nix-dotfiles.git" "$DOTFILES_DIR" 2>/dev/null \
+                    || ${git} clone "https://github.com/yukotayuki/nix-dotfiles" "$DOTFILES_DIR"
+                fi
+                nix run nix-darwin -- switch --flake "$DOTFILES_DIR#kinako"
+              ''}";
+            };
+            "setup-mochi" = {
+              type = "app";
+              program = "${pkgs.writeShellScript "setup-mochi" ''
+                set -euo pipefail
+                DOTFILES_DIR="$HOME/dotfiles"
+                if [ ! -d "$DOTFILES_DIR/.git" ]; then
+                  ${git} clone "git@github.com:yukotayuki/nix-dotfiles.git" "$DOTFILES_DIR" 2>/dev/null \
+                    || ${git} clone "https://github.com/yukotayuki/nix-dotfiles" "$DOTFILES_DIR"
+                fi
+                nix run home-manager -- switch --flake "$DOTFILES_DIR#mochi" -b bak
+                brew bundle --file "$DOTFILES_DIR/Brewfile"
+              ''}";
+            };
+          };
+        "x86_64-linux" =
+          let
+            pkgs = import nixpkgs { system = "x86_64-linux"; };
+            git = "${pkgs.git}/bin/git";
+          in
+          {
+            "setup-canele" = {
+              type = "app";
+              program = "${pkgs.writeShellScript "setup-canele" ''
+                set -euo pipefail
+                DOTFILES_DIR="$HOME/dotfiles"
+                if [ ! -d "$DOTFILES_DIR/.git" ]; then
+                  ${git} clone "git@github.com:yukotayuki/nix-dotfiles.git" "$DOTFILES_DIR" 2>/dev/null \
+                    || ${git} clone "https://github.com/yukotayuki/nix-dotfiles" "$DOTFILES_DIR"
+                fi
+                nix run home-manager -- switch --flake "$DOTFILES_DIR#canele" -b bak
+              ''}";
+            };
+          };
       };
     };
 }

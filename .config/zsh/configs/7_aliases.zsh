@@ -29,10 +29,10 @@ dc() {
 #   alias のシングルクォート内では $DOTDIR が展開されないため、
 #   どのディレクトリから実行しても動くように関数で展開時に評価させる。
 darwin-switch() {
-    sudo darwin-rebuild switch --flake "${DOTDIR:-$HOME/dotfiles}#darwin@arm"
+    sudo darwin-rebuild switch --flake "${DOTDIR:-$HOME/dotfiles}#kinako"
 }
 
-# 2台目 Mac（home-manager のみ）用
-hm-darwin-switch() {
-    home-manager switch --flake "${DOTDIR:-$HOME/dotfiles}#hm-darwin@arm"
+# mochi（home-manager のみ）用
+hm-switch() {
+    home-manager switch --flake "${DOTDIR:-$HOME/dotfiles}#mochi"
 }
