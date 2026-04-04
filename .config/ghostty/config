@@ -6,8 +6,3 @@ config-file = window.conf
 # homebrew で管理するため自動アップデート通知を無効にする。
 auto-update = off
 
-# 起動時に tmux を自動で開始する。
-# セッションが既存の場合はアタッチし、なければ新規作成する。
-# shell の rc ファイルで tmux を起動しない理由:
-#   ネストした tmux が起動してしまうため、ghostty 側で制御する。
-command = tmux new-session -A -s main
