@@ -5,3 +5,4 @@ config-file = window.conf
 
 # homebrew で管理するため自動アップデート通知を無効にする。
 auto-update = off
+

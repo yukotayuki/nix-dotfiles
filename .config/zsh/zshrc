@@ -39,3 +39,10 @@ done
 if [[ $DISTRI == 'nixos' ]]; then
     source /run/current-system/sw/etc/profile.d/flatpak.sh
 fi
+
+# Ghostty 起動時に tmux を自動で開始する。
+# ghostty の command オプションを使わない理由:
+#   login シェル経由でラップされる際に引数が分割されてコマンドが失敗するため。
+if [[ -n "$GHOSTTY_RESOURCES_DIR" && -z "$TMUX" ]]; then
+    exec tmux new-session -A -s main
+fi
