@@ -24,5 +24,5 @@ function git-prompt() {
     echo "${color}${branch}${push}%f"
 }
 
-PROMPT='%m:%2c %# '
+PROMPT='%F{#B48EAD}%m%f %F{#4C566A}❯%f %F{#D08770}%2c%f %F{#6B7A8D}%#%f '
 RPROMPT='$(git-prompt)'
