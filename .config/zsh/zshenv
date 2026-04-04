@@ -3,7 +3,8 @@ export ZHOMEDIR=$DOTDIR/.config/zsh
 
 # macOS の launchd が起動する nix openssh の ssh-agent ソケットを指定。
 # macOS 標準の ssh-agent は FIDO2 非対応のため差し替える。
-export SSH_AUTH_SOCK="$HOME/.ssh/agent.socket"
+# Linux では services.ssh-agent (systemd user service) が SSH_AUTH_SOCK を設定するため上書きしない。
+[[ "$OSTYPE" == "darwin"* ]] && export SSH_AUTH_SOCK="$HOME/.ssh/agent.socket"
 
 # Rancher Desktop の CLI ツール（docker, nerdctl, helm 等）
 export PATH="$HOME/.rd/bin:$PATH"
