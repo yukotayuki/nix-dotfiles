@@ -1,4 +1,4 @@
-{ config, lib, isNixOS, ... }:
+{ config, isNixOS, ... }:
 
 let
   dotDir = "${config.home.homeDirectory}/dotfiles";
@@ -16,12 +16,8 @@ in
   # ghq get ではなく手動 clone で ~/dotfiles に置いているが、
   # fzf-cd / fzf-open 関数が ghq list を前提としているため
   # ghq のパスからも参照できるようにしておく。
-  home.activation.dotfilesGhqSymlink = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    mkdir -p ${repoDir}/github.com/yukotayuki
-    if [ ! -e ${repoDir}/github.com/yukotayuki/nix-dotfiles ]; then
-      ln -s ${dotDir} ${repoDir}/github.com/yukotayuki/nix-dotfiles
-    fi
-  '';
+  home.file."work/repositories/github.com/yukotayuki/nix-dotfiles".source =
+    config.lib.file.mkOutOfStoreSymlink dotDir;
 
   imports = [
     ./ghostty
