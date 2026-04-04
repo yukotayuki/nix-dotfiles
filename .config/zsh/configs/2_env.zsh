@@ -22,6 +22,13 @@ if [ "$(uname)" = "Linux" ]; then
     if [ "$(uname -m)" = "aarch64" ]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     fi
+
+    # ssh-agent を keychain 経由で管理する（bashrc からの移植）。
+    # セッションをまたいでエージェントを再利用するため、
+    # パスフレーズの入力は初回のみで済む。
+    if command -v keychain &>/dev/null; then
+        eval "$(keychain --eval --quiet --confallhosts)"
+    fi
 fi
 
 # fzf
