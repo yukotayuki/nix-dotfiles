@@ -1,5 +1,6 @@
-{ pkgs
-, ...
+{
+  pkgs,
+  ...
 }:
 
 {
@@ -43,7 +44,6 @@
     networkmanager.enable = true;
   };
 
-
   time.timeZone = "Asia/Tokyo";
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -55,7 +55,11 @@
   users.users.joo = {
     isNormalUser = true;
     shell = "/etc/profiles/per-user/joo/bin/zsh";
-    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "adbusers"
+    ];
     packages = with pkgs; [
       firefox
       microsoft-edge
@@ -90,11 +94,11 @@
 
     fontconfig = {
       defaultFonts = {
-        sansSerif = [ 
+        sansSerif = [
           "IPAPGothic"
           "Noto Sans CJK JP"
         ];
-        serif = [ 
+        serif = [
           "IPAPMincho"
           "Noto Serif JP"
         ];
@@ -136,7 +140,7 @@
   };
 
   programs.nm-applet.enable = true;
-  
+
   services.udev = {
     extraHwdb = ''
       evdev:atkbd:dmi:*

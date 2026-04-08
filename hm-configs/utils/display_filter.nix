@@ -4,14 +4,17 @@ let
 
 in
 {
-  home.packages = with pkgs; [
-    ripgrep
-    choose
-  ] ++ lib.lists.optionals isLinux [
-    file
-    lshw
-    pciutils
-  ];
+  home.packages =
+    with pkgs;
+    [
+      ripgrep
+      choose
+    ]
+    ++ lib.lists.optionals isLinux [
+      file
+      lshw
+      pciutils
+    ];
 
   programs = {
     bat = {

@@ -1,6 +1,7 @@
-{ config
-, pkgs
-, ...
+{
+  config,
+  pkgs,
+  ...
 }:
 
 {
@@ -47,7 +48,11 @@
   users.users.joo = {
     isNormalUser = true;
     shell = "/etc/profiles/per-user/joo/bin/zsh";
-    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "adbusers"
+    ];
     packages = with pkgs; [
       firefox
       microsoft-edge
@@ -85,11 +90,11 @@
 
     fontconfig = {
       defaultFonts = {
-        sansSerif = [ 
+        sansSerif = [
           "IPAPGothic"
           "Noto Sans CJK JP"
         ];
-        serif = [ 
+        serif = [
           "IPAPMincho"
           "Noto Serif JP"
         ];
@@ -119,7 +124,6 @@
     nvidia.package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
-
   services.printing.enable = true;
 
   sound.enable = true;
@@ -144,7 +148,7 @@
   security.pam.services.lightdm.enableGnomeKeyring = true;
 
   # for yubioath-desktop
-  services.udev.packages = with pkgs; [yubikey-personalization];
+  services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.pcscd.enable = true;
 
   # flatpak

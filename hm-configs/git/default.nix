@@ -25,7 +25,10 @@
         merge.conflictstyle = "diff3";
         diff.colorMoved = "default";
       };
-      ignores = [ ".envrc" ".DS_Store" ];
+      ignores = [
+        ".envrc"
+        ".DS_Store"
+      ];
     };
 
     gh = {

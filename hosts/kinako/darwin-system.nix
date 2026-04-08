@@ -2,8 +2,8 @@
 
 {
   networking = {
-    computerName  = config.hostSpec.name;
-    hostName      = config.hostSpec.name;
+    computerName = config.hostSpec.name;
+    hostName = config.hostSpec.name;
     localHostName = config.hostSpec.name;
   };
 
