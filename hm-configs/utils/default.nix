@@ -1,4 +1,9 @@
-{ pkgs, lib, isNixOS, ... }:
+{
+  pkgs,
+  lib,
+  isNixOS,
+  ...
+}:
 
 let
   inherit (pkgs.stdenv) isLinux;
@@ -13,18 +18,22 @@ in
     ./visualization.nix
   ];
 
-  home.packages = with pkgs; [
-    unzip
-    hyperfine
-    fzf
-    gh
-    rsync
-    minicom
-    smartmontools
-  ] ++ lib.lists.optionals isLinux [
-    binutils
-  ] ++ lib.lists.optionals isNixOS [
-    gcc
-    gnumake
-  ];
+  home.packages =
+    with pkgs;
+    [
+      unzip
+      hyperfine
+      fzf
+      gh
+      rsync
+      minicom
+      smartmontools
+    ]
+    ++ lib.lists.optionals isLinux [
+      binutils
+    ]
+    ++ lib.lists.optionals isNixOS [
+      gcc
+      gnumake
+    ];
 }

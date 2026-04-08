@@ -14,20 +14,25 @@
     };
   };
 
-  outputs = inputs: with inputs;
+  outputs =
+    inputs:
+    with inputs;
     let
       vars = import ./vars.nix;
       inherit (vars) username homeDirectoryPrefix;
 
       mkHomeConfig =
-        { system ? "x86_64-linux"
-        , pkgs ? (import nixpkgs { inherit system; })
-        , homeDirectory ? "${homeDirectoryPrefix pkgs}/${username}"
-        , extraModules ? []
+        {
+          system ? "x86_64-linux",
+          pkgs ? (import nixpkgs { inherit system; }),
+          homeDirectory ? "${homeDirectoryPrefix pkgs}/${username}",
+          extraModules ? [ ],
         }:
         home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          extraSpecialArgs = { isNixOS = false; };
+          extraSpecialArgs = {
+            isNixOS = false;
+          };
 
           modules = [
             ./home.nix
@@ -37,10 +42,15 @@
                 inherit homeDirectory;
               };
             }
-          ] ++ extraModules;
+          ]
+          ++ extraModules;
         };
 
-      mkNixOSConfig = { system ? "x86_64-linux", extraModules }:
+      mkNixOSConfig =
+        {
+          system ? "x86_64-linux",
+          extraModules,
+        }:
         nixpkgs.lib.nixosSystem {
           inherit system;
 
@@ -51,13 +61,21 @@
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users."${username}" = import ./home.nix;
-                extraSpecialArgs = { isNixOS = true; };
+                extraSpecialArgs = {
+                  isNixOS = true;
+                };
               };
             }
-          ] ++ extraModules;
+          ]
+          ++ extraModules;
         };
 
-      mkDarwinConfig = { system ? "x86_64-darwin", extraModules, hmModules ? [] }:
+      mkDarwinConfig =
+        {
+          system ? "x86_64-darwin",
+          extraModules,
+          hmModules ? [ ],
+        }:
         darwin.lib.darwinSystem {
           inherit system;
           modules = [
@@ -78,12 +96,15 @@
                 # abort せずに <file>.bak へ退避してから上書きする。
                 backupFileExtension = "bak";
                 users."${username}" = import ./home.nix;
-                extraSpecialArgs = { isNixOS = false; };
+                extraSpecialArgs = {
+                  isNixOS = false;
+                };
                 # ホスト固有の home-manager モジュール（hostSpec 設定など）
                 sharedModules = hmModules;
               };
             }
-          ] ++ extraModules;
+          ]
+          ++ extraModules;
         };
     in
     {
@@ -124,15 +145,31 @@
           system = "aarch64-darwin";
           extraModules = [
             ./modules/hostSpec.nix
-            { hostSpec.name = "kinako"; hostSpec.enableYubikey = true; }
+            {
+              hostSpec.name = "kinako";
+              hostSpec.enableYubikey = true;
+            }
             ./hosts/kinako/darwin-configuration.nix
           ];
           hmModules = [
             ./modules/hostSpec.nix
             ./hosts/kinako/home-configuration.nix
-            { hostSpec.name = "kinako"; hostSpec.enableYubikey = true; }
+            {
+              hostSpec.name = "kinako";
+              hostSpec.enableYubikey = true;
+            }
           ];
         };
+      };
+
+      formatter = {
+        # nix fmt で全 .nix ファイルを整形するエントリポイント。
+        # treefmt-nix を使わない理由:
+        #   deadnix / statix は CI で既にカバー済みのため、
+        #   フォーマッターのみで十分。nixfmt-tree はディレクトリを
+        #   正しく処理できる公式ラッパー（nixfmt 単体は deprecated）。
+        "aarch64-darwin" = (import nixpkgs { system = "aarch64-darwin"; }).nixfmt-tree;
+        "x86_64-linux" = (import nixpkgs { system = "x86_64-linux"; }).nixfmt-tree;
       };
 
       apps = {
