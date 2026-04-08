@@ -34,5 +34,12 @@
   #   nix.enable = false にすることで nix 管理を Determinate に委譲する。
   nix.enable = false;
 
+  # Determinate Nix は /etc/nix/nix.conf を独自管理しており、
+  # nix.conf.d/ は読まれない。代わりに nix.conf 内の
+  # `!include nix.custom.conf` がユーザー設定の差し込み口として用意されている。
+  environment.etc."nix/nix.custom.conf".text = ''
+    extra-trusted-users = joo
+  '';
+
   programs.zsh.enable = true;
 }
