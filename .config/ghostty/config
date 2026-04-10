@@ -6,3 +6,8 @@ config-file = window.conf
 # homebrew で管理するため自動アップデート通知を無効にする。
 auto-update = off
 
+# 起動時に通常ウィンドウを開かず、quick-terminal のみ使う。
+# ウィンドウがゼロの状態でも終了しないよう quit-after-last-window-closed もセットで設定。
+initial-window = false
+quit-after-last-window-closed = false
+
