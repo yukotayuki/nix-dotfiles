@@ -13,6 +13,7 @@ _:
     ];
     casks = [
       "claude"
+      "font-blex-mono-nerd-font"
       "font-noto-nerd-font"
       "font-udev-gothic-nf"
       "ghostty"
