@@ -36,6 +36,7 @@ cask "logi-options+"
 cask "karabiner-elements"
 
 # フォント
+cask "font-blex-mono-nerd-font"
 cask "font-hackgen-nerd"
 cask "font-noto-nerd-font"
 
