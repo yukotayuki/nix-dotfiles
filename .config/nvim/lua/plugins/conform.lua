@@ -10,6 +10,7 @@ return {
           typescript = js_formatters,
           json = js_formatters,
           lua = { lsp_format = 'fallback' },
+          nix = { 'nixfmt' },
           sh = { 'shfmt' },
         },
         -- changed from 500 ms to 5000 ms due to prettier timeout

@@ -27,6 +27,7 @@ in
       gh
       rsync
       minicom
+      nixfmt-rfc-style
       smartmontools
       yazi
     ]
