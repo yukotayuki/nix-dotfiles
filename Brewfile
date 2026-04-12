@@ -1,11 +1,14 @@
 tap "homebrew/bundle"
 tap "anomalyco/tap"
+tap "trasta298/tap"
 
 # CLI ツール
 # telnet: nixpkgs の inetutils は Darwin 向けビルドが不安定なため homebrew で管理
 brew "mas"
 brew "telnet"
 brew "anomalyco/tap/opencode"
+# keifu: nixpkgs 未収録のため tap 経由
+brew "trasta298/tap/keifu"
 
 # ターミナル
 cask "ghostty"
