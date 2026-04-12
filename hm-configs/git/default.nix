@@ -22,7 +22,10 @@
           light = false;
           side-by-side = true;
         };
-        merge.conflictstyle = "diff3";
+        merge = {
+          tool = "nvimdiff";
+          conflictstyle = "diff3";
+        };
         diff.colorMoved = "default";
       };
       ignores = [

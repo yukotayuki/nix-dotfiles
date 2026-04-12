@@ -21,6 +21,7 @@ in
       enable = true;
       config = {
         theme = "gruvbox-dark";
+        style = "plain";
       };
     };
     jq = {
