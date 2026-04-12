@@ -28,6 +28,7 @@ in
       rsync
       minicom
       smartmontools
+      yazi
     ]
     ++ lib.lists.optionals isLinux [
       binutils
