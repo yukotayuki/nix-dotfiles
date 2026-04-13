@@ -20,9 +20,9 @@ jobs:
       - name: Nix キャッシュを有効化
         uses: DeterminateSystems/magic-nix-cache-action@565684385bcd71bad329742eefe8d12f2e765b39 # v13
 
-      - name: hm-ubuntu をビルド
-        run: nix build .#homeConfigurations.hm-ubuntu.activationPackage --no-link
+      - name: canele をビルド
+        run: nix build .#homeConfigurations.canele.activationPackage --no-link
 
-      - name: hm-darwin@arm をビルド
+      - name: mochi をビルド
         # macOS 固有のパッケージは Linux でビルドできないため --dry-run で依存グラフの検証のみ行う
-        run: nix build .#homeConfigurations."hm-darwin@arm".activationPackage --no-link --dry-run
+        run: nix build .#homeConfigurations.mochi.activationPackage --no-link --dry-run
