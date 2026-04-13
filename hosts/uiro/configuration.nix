@@ -10,23 +10,18 @@
   ];
 
   nix = {
-    #packages = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [
-    "libdwarf-20210528"
-  ];
 
   boot = {
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     loader.efi.efiSysMountPoint = "/boot/efi";
 
-    # kernelPackages = pkgs.linuxPackages_5_18;
     kernelPackages = pkgs.linuxPackages_latest;
     kernelPatches = [
       {
@@ -40,7 +35,7 @@
   };
 
   networking = {
-    hostName = "nixos";
+    hostName = "uiro";
     networkmanager.enable = true;
   };
 
@@ -48,8 +43,12 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.inputMethod = {
-    enabled = "fcitx";
-    fcitx.engines = with pkgs.fcitx-engines; [ mozc ];
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
   };
 
   users.users.joo = {
@@ -74,20 +73,18 @@
     xfce.xfce4-pulseaudio-plugin
     xfce.xfce4-panel-profiles
     pavucontrol
-    plata-theme
     arc-icon-theme
     gtk-engine-murrine
     gtk_engines
     sassc
     conky
     killall
-    # ulauncher # ulauncherはinstallはうまく動いてくれないのでrofiを使うべき
   ];
 
   fonts = {
-    fonts = with pkgs; [
+    packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk
+      noto-fonts-cjk-sans
       noto-fonts-emoji
       ipafont
     ];
@@ -109,21 +106,17 @@
   services.xserver = {
     enable = true;
 
-    displayManager = {
-      lightdm.enable = true;
-      #autoLogin.enable = true;
-      #autoLogin.user = "joo";
-    };
-
+    displayManager.lightdm.enable = true;
     desktopManager.xfce.enable = true;
 
-    layout = "us";
-    xkbVariant = "";
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
   };
 
   services.printing.enable = true;
 
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -136,7 +129,7 @@
 
   services.openssh = {
     enable = true;
-    passwordAuthentication = true;
+    settings.PasswordAuthentication = true;
   };
 
   programs.nm-applet.enable = true;
