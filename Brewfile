@@ -19,6 +19,7 @@ cask "rancher"
 # 開発ツール
 cask "copilot-cli"
 cask "visual-studio-code"
+cask "obsidian"
 
 # ブラウザ
 cask "firefox"
