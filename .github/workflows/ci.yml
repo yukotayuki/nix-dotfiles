@@ -40,9 +40,9 @@ jobs:
         run: nix run nixpkgs#deadnix -- --fail .
 
       - name: statix（アンチパターン検出）
-        # hosts/laptop, hosts/gaming は NixOS 慣用の boot.loader.* スタイルが
+        # hosts/uiro, hosts/gaming は NixOS 慣用の boot.loader.* スタイルが
         # W20（repeated keys）の誤検知を引き起こすため除外する。
-        run: nix run nixpkgs#statix -- check . -i "hosts/laptop" "hosts/gaming"
+        run: nix run nixpkgs#statix -- check . -i "hosts/uiro" "hosts/gaming"
 
   eval:
     name: 全設定の評価検証

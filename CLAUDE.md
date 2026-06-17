@@ -7,6 +7,7 @@
 | Apple Silicon Mac 1台目 | kinako | nix-darwin + home-manager | `darwinConfigurations.kinako` |
 | Apple Silicon Mac 2台目 | mochi | home-manager + brew bundle | `homeConfigurations.mochi` |
 | Ubuntu x86_64 (Linux) | canele | home-manager | `homeConfigurations.canele` |
+| NixOS x86_64（laptop / VM） | uiro | nixos + home-manager | `nixosConfigurations.uiro` |
 
 - dotfiles の配置場所: `~/dotfiles`
 
@@ -65,6 +66,9 @@ hm-switch          # home-manager switch --flake "$DOTDIR#mochi" の短縮形
 
 # canele（Ubuntu）
 nix run home-manager -- switch --flake "$DOTDIR#canele"
+
+# uiro（NixOS）
+sudo nixos-rebuild switch --flake "$DOTDIR#uiro"
 ```
 
 nix ファイル（`*.nix`, `flake.nix`, `flake.lock`）を変更した場合、PR 作成前に必ず対象マシンで switch して動作確認する。

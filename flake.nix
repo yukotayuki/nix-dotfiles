@@ -128,9 +128,9 @@
       };
 
       nixosConfigurations = {
-        nix-laptop = mkNixOSConfig {
+        uiro = mkNixOSConfig {
           extraModules = [
-            ./hosts/laptop/configuration.nix
+            ./hosts/uiro/configuration.nix
           ];
         };
         nix-gaming = mkNixOSConfig {
@@ -221,6 +221,18 @@
                     || ${git} clone "https://github.com/yukotayuki/nix-dotfiles" "$DOTFILES_DIR"
                 fi
                 nix run home-manager -- switch --flake "$DOTFILES_DIR#canele" -b bak
+              ''}";
+            };
+            "setup-uiro" = {
+              type = "app";
+              program = "${pkgs.writeShellScript "setup-uiro" ''
+                set -euo pipefail
+                DOTFILES_DIR="$HOME/dotfiles"
+                if [ ! -d "$DOTFILES_DIR/.git" ]; then
+                  ${git} clone "git@github.com:yukotayuki/nix-dotfiles.git" "$DOTFILES_DIR" 2>/dev/null \
+                    || ${git} clone "https://github.com/yukotayuki/nix-dotfiles" "$DOTFILES_DIR"
+                fi
+                sudo nixos-rebuild switch --flake "$DOTFILES_DIR#uiro"
               ''}";
             };
           };
