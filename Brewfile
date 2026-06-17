@@ -1,14 +1,17 @@
 tap "homebrew/bundle"
-tap "anomalyco/tap"
+# tap "anomalyco/tap"
 tap "trasta298/tap"
+tap "hashicorp/tap"
 
 # CLI ツール
 # telnet: nixpkgs の inetutils は Darwin 向けビルドが不安定なため homebrew で管理
 brew "mas"
 brew "telnet"
-brew "anomalyco/tap/opencode"
+# brew "anomalyco/tap/opencode"
 # keifu: nixpkgs 未収録のため tap 経由
-brew "trasta298/tap/keifu"
+brew "trasta298/tap/keifu", trusted: true
+# brew "hashicorp/tap/terraform", trusted: true
+brew "tfenv"
 
 # ターミナル
 cask "ghostty"
@@ -20,6 +23,7 @@ cask "rancher"
 cask "copilot-cli"
 cask "visual-studio-code"
 cask "obsidian"
+cask "claude"
 
 # ブラウザ
 cask "firefox"

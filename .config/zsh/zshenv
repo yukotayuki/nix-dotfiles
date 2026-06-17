@@ -8,3 +8,6 @@ export ZHOMEDIR=$DOTDIR/.config/zsh
 
 # Rancher Desktop の CLI ツール（docker, nerdctl, helm 等）
 export PATH="$HOME/.rd/bin:$PATH"
+
+# tfnev の PATH
+export PATH="$HOME/.tfenv/bin:$PATH"
