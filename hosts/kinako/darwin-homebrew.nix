@@ -3,10 +3,16 @@ _:
 {
   homebrew = {
     enable = true;
-    # brew bundle dump で現状確認済み（2026-04-09）。
-    # 宣言と実態が一致しているため "zap" に変更。
-    # 以後、宣言にないパッケージは darwin-switch 時に自動削除される。
-    onActivation.cleanup = "zap";
+    # onActivation.cleanup = "uninstall" / "zap" を使わない理由:
+    #   nix-darwin の homebrew モジュールがドキュメントに反して --force-cleanup を生成するバグがある。
+    #   Homebrew が --force-cleanup を廃止（2026-06 時点）したため darwin-switch が失敗する。
+    #   回避策として cleanup = "none" + extraFlags で --cleanup --zap を直接渡す。
+    #   nix-darwin 修正後は cleanup = "zap" に戻し extraFlags を削除する。
+    onActivation.cleanup = "none";
+    onActivation.extraFlags = [
+      "--cleanup"
+      "--zap"
+    ];
     taps = [
       "trasta298/tap"
     ];
