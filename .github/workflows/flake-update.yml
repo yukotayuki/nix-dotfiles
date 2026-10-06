@@ -1,9 +1,9 @@
-name: Weekly flake update
+name: Monthly flake update
 
 on:
   schedule:
-    # 毎週月曜 09:00 JST（00:00 UTC）に実行
-    - cron: "0 0 * * 1"
+    # 毎月1日 09:00 JST（00:00 UTC）に実行
+    - cron: "0 0 1 * *"
   workflow_dispatch:
 
 jobs:
@@ -13,6 +13,11 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # GITHUB_TOKEN で作成した PR では pull_request イベントが発火しないため、
+      # 例外的に許可されている workflow_dispatch で CI とビルドを起動する。
+      # PAT / GitHub App トークンを使わない理由:
+      #   シークレットの発行・ローテーション管理が増えるため
+      actions: write
 
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -31,15 +36,25 @@ jobs:
         run: nix flake update
 
       - name: PR を作成
+        id: cpr
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
           commit-message: "chore(nix): nix flake update"
-          title: "chore(nix): 週次 nix flake update"
+          title: "chore(nix): 月次 nix flake update"
           body: |
-            週次スケジュールによる自動 `nix flake update`。
+            月次スケジュールによる自動 `nix flake update`。
 
             変更があった場合のみこの PR が作成されます。
-            CI が通ったことを確認してからマージしてください。
+            CI と Build が通ったことを確認してからマージしてください。
           branch: chore/flake-update-${{ steps.date.outputs.date }}
           delete-branch: true
           labels: dependencies
+
+      - name: PR ブランチで CI とビルドを起動
+        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.cpr.outputs.pull-request-branch }}
+        run: |
+          gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH"
+          gh workflow run build.yml --repo "$GITHUB_REPOSITORY" --ref "$BRANCH"
