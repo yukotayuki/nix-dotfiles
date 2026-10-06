@@ -1,9 +1,9 @@
-name: Weekly build
+name: Bimonthly build
 
 on:
   schedule:
-    # 毎週月曜 09:30 JST（00:30 UTC）に実行（flake-update の後）
-    - cron: "30 0 * * 1"
+    # 2ヶ月に1回、1日 09:30 JST（00:30 UTC）に実行（flake-update の後）
+    - cron: "30 0 1 */2 *"
   workflow_dispatch:
 
 jobs:

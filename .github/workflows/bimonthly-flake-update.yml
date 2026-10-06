@@ -1,9 +1,9 @@
-name: Weekly flake update
+name: Bimonthly flake update
 
 on:
   schedule:
-    # 毎週月曜 09:00 JST（00:00 UTC）に実行
-    - cron: "0 0 * * 1"
+    # 2ヶ月に1回、1日 09:00 JST（00:00 UTC）に実行
+    - cron: "0 0 1 */2 *"
   workflow_dispatch:
 
 jobs:
@@ -34,9 +34,9 @@ jobs:
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
         with:
           commit-message: "chore(nix): nix flake update"
-          title: "chore(nix): 週次 nix flake update"
+          title: "chore(nix): 隔月 nix flake update"
           body: |
-            週次スケジュールによる自動 `nix flake update`。
+            2ヶ月に1回のスケジュールによる自動 `nix flake update`。
 
             変更があった場合のみこの PR が作成されます。
             CI が通ったことを確認してからマージしてください。
