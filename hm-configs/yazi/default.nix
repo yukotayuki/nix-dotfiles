@@ -1,4 +1,41 @@
 { pkgs, ... }:
+let
+  # s / S の標準動作（入力を確定してから yazi に結果を並べる）を、fzf でリアルタイムに絞り込みとプレビューを行う形に置き換える。
+  # プレビューと ctrl-/ の切り替えは zsh の FZF_CTRL_T_OPTS に揃える。選んだファイルは yazi でカーソルを合わせる。
+  fzfFind = pkgs.writeShellApplication {
+    name = "yazi-fzf-find";
+    runtimeInputs = with pkgs; [
+      fd
+      fzf
+      bat
+    ];
+    text = ''
+      sel=$(fd --type f --hidden --exclude .git \
+        | fzf --preview 'bat -n --color=always {}' \
+          --bind 'ctrl-/:change-preview-window(down|hidden|)') || exit 0
+      ya emit reveal "$PWD/$sel"
+    '';
+  };
+  fzfGrep = pkgs.writeShellApplication {
+    name = "yazi-fzf-grep";
+    runtimeInputs = with pkgs; [
+      ripgrep
+      fzf
+      bat
+    ];
+    # 入力のたびに rg を再実行する。空の入力で全ファイルを走査しないよう、起動直後は候補を空にする。
+    text = ''
+      rg_cmd="rg --column --line-number --no-heading --color=always --smart-case --hidden --glob '!.git'"
+      sel=$(: | fzf --ansi --disabled \
+        --bind "change:reload:sleep 0.1; $rg_cmd {q} || true" \
+        --delimiter : \
+        --preview 'bat -n --color=always --highlight-line {2} {1}' \
+        --preview-window '+{2}/2' \
+        --bind 'ctrl-/:change-preview-window(down|hidden|)') || exit 0
+      ya emit reveal "$PWD/''${sel%%:*}"
+    '';
+  };
+in
 {
   programs.yazi = {
     enable = true;
@@ -58,6 +95,16 @@
           on = "l";
           run = "plugin smart-enter";
           desc = "Enter the child directory, or open the file";
+        }
+        {
+          on = "s";
+          run = "shell --block -- ${fzfFind}/bin/yazi-fzf-find";
+          desc = "Search files by name via fd + fzf";
+        }
+        {
+          on = "S";
+          run = "shell --block -- ${fzfGrep}/bin/yazi-fzf-grep";
+          desc = "Search files by content via ripgrep + fzf";
         }
         {
           on = [
