@@ -29,6 +29,7 @@ in
     ./tmux
     ./utils
     ./vim
+    ./yazi
     ./zsh
   ];
 }

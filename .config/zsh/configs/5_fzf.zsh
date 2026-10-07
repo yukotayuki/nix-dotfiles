@@ -11,10 +11,19 @@ fi
 # fzf の表示は ghq list（相対パス）にして視認性を保ちつつ、
 # cd 先は $(ghq root)/$selected で絶対パスに変換する。
 # ghq list -p を表示に使わない理由: 絶対パスは長くて fzf で見づらい。
+# fzf 上で Enter なら cd、Ctrl-Y なら選んだリポジトリで yazi を開く。
+# yazi は home-manager が生成する y ラッパー経由で起動し、q で終了したら最後にいたディレクトリへ移動する。
 function fzf-cd-git-repository() {
-    local selected=$(ghq list | fzf)
+    local -a lines
+    lines=("${(@f)$(ghq list | fzf --expect=ctrl-y --header='Enter: cd / Ctrl-Y: yazi')}")
+    local key=$lines[1] selected=$lines[2]
     if [[ -n $selected ]]; then
-        cd "$(ghq root)/$selected"
+        if [[ $key == ctrl-y ]]; then
+            zle -I
+            y "$(ghq root)/$selected" </dev/tty
+        else
+            cd "$(ghq root)/$selected"
+        fi
     fi
     zle reset-prompt
 }

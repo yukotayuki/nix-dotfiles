@@ -21,7 +21,6 @@ return {
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       require('lualine').setup({
-        extensions = { 'neo-tree' },
         sections = {
           lualine_y = { selection_count, 'progress' },
         },
