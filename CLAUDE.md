@@ -28,9 +28,9 @@
 | GUI アプリ（mochi） | Brewfile（`brew bundle`） | home-manager のみ構成のため darwin homebrew モジュールが使えない |
 
 ### Homebrew の cleanup 設定
-`homebrew.onActivation.cleanup = "uninstall"` に設定済み（kinako のみ）。
-宣言から外したパッケージは次回 `darwin-switch` 時に自動削除される。
-`"zap"` にすると宣言にない既存パッケージが全部消えるので注意。
+`homebrew.onActivation.cleanup = "zap"` に設定済み（kinako のみ）。
+宣言にないパッケージは次回 `darwin-switch` 時に自動削除される。
+cask は `zap` で設定やキャッシュなどの関連データごと消えるので、手動で `brew install` したものは必ず宣言に追加すること。
 
 ## セットアップ
 
