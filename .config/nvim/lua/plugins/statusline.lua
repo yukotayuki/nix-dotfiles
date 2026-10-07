@@ -1,3 +1,20 @@
+-- visual mode の選択範囲の文字数（マルチバイトは 1 文字として数える）
+local function selection_count()
+  local mode = vim.fn.mode(true):sub(1, 1)
+  if not mode:find('[vV\22]') then
+    return ''
+  end
+  local region = vim.fn.getregion(vim.fn.getpos('v'), vim.fn.getpos('.'), { type = mode })
+  local chars = 0
+  for _, line in ipairs(region) do
+    chars = chars + vim.fn.strchars(line)
+  end
+  if #region > 1 then
+    return string.format('%dL %dC', #region, chars)
+  end
+  return string.format('%dC', chars)
+end
+
 return {
   {
     'nvim-lualine/lualine.nvim',
@@ -5,6 +22,9 @@ return {
     config = function()
       require('lualine').setup({
         extensions = { 'neo-tree' },
+        sections = {
+          lualine_y = { selection_count, 'progress' },
+        },
       })
     end
   },
