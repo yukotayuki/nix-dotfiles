@@ -1,7 +1,34 @@
 { pkgs, ... }:
 let
+  # yazi 内の fzf は、シェルの FZF_DEFAULT_OPTS（高さ 40%）を引き継いだうえで全画面に揃える。
+  # 標準の zoxide プラグイン（Z）が全画面で開くため、それに合わせる。
+  fzfHeight = "--height=100%";
+  # プレビューと ctrl-/ の切り替えは zsh の FZF_CTRL_T_OPTS / FZF_ALT_C_OPTS に揃える。
+  fzfPreviewToggle = "--bind 'ctrl-/:change-preview-window(down|hidden|)'";
+
+  # z の標準動作（yazi 同梱の fzf プラグイン）は fzf の高さを外から渡せないため、同じ動きのスクリプトに置き換える。
+  # ディレクトリを選んだら移動し、ファイルを選んだらカーソルを合わせる。
+  fzfJump = pkgs.writeShellApplication {
+    name = "yazi-fzf-jump";
+    runtimeInputs = with pkgs; [
+      fd
+      fzf
+      bat
+      tree
+    ];
+    text = ''
+      sel=$(fd --hidden --exclude .git \
+        | fzf ${fzfHeight} ${fzfPreviewToggle} \
+          --preview '[ -d {} ] && tree -C {} | head -200 || bat -n --color=always {}') || exit 0
+      if [ -d "$sel" ]; then
+        ya emit cd "$PWD/$sel"
+      else
+        ya emit reveal "$PWD/$sel"
+      fi
+    '';
+  };
   # s / S の標準動作（入力を確定してから yazi に結果を並べる）を、fzf でリアルタイムに絞り込みとプレビューを行う形に置き換える。
-  # プレビューと ctrl-/ の切り替えは zsh の FZF_CTRL_T_OPTS に揃える。選んだファイルは yazi でカーソルを合わせる。
+  # 選んだファイルは yazi でカーソルを合わせる。
   fzfFind = pkgs.writeShellApplication {
     name = "yazi-fzf-find";
     runtimeInputs = with pkgs; [
@@ -11,8 +38,8 @@ let
     ];
     text = ''
       sel=$(fd --type f --hidden --exclude .git \
-        | fzf --preview 'bat -n --color=always {}' \
-          --bind 'ctrl-/:change-preview-window(down|hidden|)') || exit 0
+        | fzf ${fzfHeight} ${fzfPreviewToggle} \
+          --preview 'bat -n --color=always {}') || exit 0
       ya emit reveal "$PWD/$sel"
     '';
   };
@@ -24,14 +51,14 @@ let
       bat
     ];
     # 入力のたびに rg を再実行する。空の入力で全ファイルを走査しないよう、起動直後は候補を空にする。
+    # --smart-case だと検索語に大文字が 1 つでも入ると区別が有効になり、camelCase の一部（例: localV）で LocalVideoStream に当たらないため、常に大文字小文字を無視する。
     text = ''
-      rg_cmd="rg --column --line-number --no-heading --color=always --smart-case --hidden --glob '!.git'"
-      sel=$(: | fzf --ansi --disabled \
+      rg_cmd="rg --column --line-number --no-heading --color=always --ignore-case --hidden --glob '!.git'"
+      sel=$(: | fzf ${fzfHeight} ${fzfPreviewToggle} --ansi --disabled \
         --bind "change:reload:sleep 0.1; $rg_cmd {q} || true" \
         --delimiter : \
         --preview 'bat -n --color=always --highlight-line {2} {1}' \
-        --preview-window '+{2}/2' \
-        --bind 'ctrl-/:change-preview-window(down|hidden|)') || exit 0
+        --preview-window '+{2}/2') || exit 0
       ya emit reveal "$PWD/''${sel%%:*}"
     '';
   };
@@ -97,6 +124,11 @@ in
           desc = "Enter the child directory, or open the file";
         }
         {
+          on = "z";
+          run = "shell --block -- ${fzfJump}/bin/yazi-fzf-jump";
+          desc = "Jump to a file/directory via fd + fzf";
+        }
+        {
           on = "s";
           run = "shell --block -- ${fzfFind}/bin/yazi-fzf-find";
           desc = "Search files by name via fd + fzf";
@@ -112,7 +144,7 @@ in
             "r"
           ];
           # zsh の fzf-cd-git-repository と同じく、fzf には相対パスを表示して cd 先で ghq root を付ける。
-          run = ''shell --block -- sel="$(ghq list | fzf)" && ya emit cd "$(ghq root)/$sel"'';
+          run = ''shell --block -- sel="$(ghq list | fzf ${fzfHeight})" && ya emit cd "$(ghq root)/$sel"'';
           desc = "Jump to a ghq repository via fzf";
         }
         {
