@@ -29,7 +29,6 @@ in
       minicom
       nixfmt-rfc-style
       smartmontools
-      yazi
     ]
     ++ lib.lists.optionals isLinux [
       binutils
