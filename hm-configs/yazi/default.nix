@@ -81,9 +81,10 @@
             ","
             "f"
           ];
-          # nvim の ,f（yazi.nvim）で開いた yazi を同じキーで閉じる。単体起動でも q と同じく終了する。
-          run = "quit";
-          desc = "Quit (close yazi.nvim with the same key as ,f)";
+          # nvim の ,f（yazi.nvim）で開いた yazi を同じキーで閉じる。
+          # nvim の子プロセスにだけ設定される $NVIM で判定し、単体起動の yazi では何もしない。
+          run = ''shell -- [ -n "$NVIM" ] && ya emit quit'';
+          desc = "Close yazi.nvim (same key as ,f in nvim)";
         }
       ];
     };
