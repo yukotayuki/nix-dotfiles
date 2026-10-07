@@ -164,7 +164,8 @@ in
             "r"
           ];
           # zsh の fzf-cd-git-repository と同じく、fzf には相対パスを表示して cd 先で ghq root を付ける。
-          run = ''shell --block -- sel="$(ghq list | fzf ${fzfHeight})" && ya emit cd "$(ghq root)/$sel"'';
+          # fzf を Esc で閉じたときも終了コード 0 で終わるよう if で包む（0 以外だと yazi のタスク一覧に Failed が残る）。
+          run = ''shell --block -- if sel="$(ghq list | fzf ${fzfHeight})"; then ya emit cd "$(ghq root)/$sel"; fi'';
           desc = "Jump to a ghq repository via fzf";
         }
         {
@@ -182,7 +183,8 @@ in
           ];
           # nvim の ,f（yazi.nvim）で開いた yazi を同じキーで閉じる。
           # nvim の子プロセスにだけ設定される $NVIM で判定し、単体起動の yazi では何もしない。
-          run = ''shell -- [ -n "$NVIM" ] && ya emit quit'';
+          # && で書くと単体起動時に終了コード 1 になり、yazi のタスク一覧に Failed が残るため || で書く。
+          run = ''shell -- [ -z "$NVIM" ] || ya emit quit'';
           desc = "Close yazi.nvim (same key as ,f in nvim)";
         }
       ];
