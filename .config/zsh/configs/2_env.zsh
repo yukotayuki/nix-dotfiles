@@ -43,3 +43,6 @@ export FZF_CTRL_T_OPTS="
   --preview 'bat -n --color=always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+
+# claude code default model
+export ANTHROPIC_MODEL="claude-sonnet-4-6"
