@@ -9,6 +9,9 @@ on:
   #   起動元（main）の ref で実行されるため、PR ブランチをビルドできない
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: 全設定のフルビルド
