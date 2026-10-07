@@ -76,6 +76,15 @@
           run = "shell --block -- lazygit";
           desc = "Open lazygit";
         }
+        {
+          on = [
+            ","
+            "f"
+          ];
+          # nvim の ,f（yazi.nvim）で開いた yazi を同じキーで閉じる。単体起動でも q と同じく終了する。
+          run = "quit";
+          desc = "Quit (close yazi.nvim with the same key as ,f)";
+        }
       ];
     };
   };
