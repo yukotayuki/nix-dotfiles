@@ -43,19 +43,39 @@ let
       ya emit reveal "$PWD/$sel"
     '';
   };
+  # fzf の reload から呼ぶ rg。VS Code の全体検索に合わせ、既定は文字列として検索し、プロンプトが regex> のときだけ正規表現として扱う。
+  # --smart-case だと検索語に大文字が 1 つでも入ると区別が有効になり、camelCase の一部（例: localV）で LocalVideoStream に当たらないため、常に大文字小文字を無視する。
+  rgSearch = pkgs.writeShellApplication {
+    name = "yazi-rg-search";
+    runtimeInputs = [ pkgs.ripgrep ];
+    text = ''
+      query=''${1:-}
+      [ -z "$query" ] && exit 0
+      args=(--column --line-number --no-heading --color=always --ignore-case --hidden --glob '!.git')
+      case "''${FZF_PROMPT:-}" in
+        regex*) ;;
+        *) args+=(--fixed-strings) ;;
+      esac
+      rg "''${args[@]}" -- "$query" || true
+    '';
+  };
   fzfGrep = pkgs.writeShellApplication {
     name = "yazi-fzf-grep";
     runtimeInputs = with pkgs; [
-      ripgrep
+      rgSearch
       fzf
       bat
     ];
     # 入力のたびに rg を再実行する。空の入力で全ファイルを走査しないよう、起動直後は候補を空にする。
-    # --smart-case だと検索語に大文字が 1 つでも入ると区別が有効になり、camelCase の一部（例: localV）で LocalVideoStream に当たらないため、常に大文字小文字を無視する。
+    # ctrl-r でプロンプトを text> / regex> と切り替え、同じ検索語で検索し直す。
     text = ''
-      rg_cmd="rg --column --line-number --no-heading --color=always --ignore-case --hidden --glob '!.git'"
+      # $FZF_PROMPT は fzf が transform の実行時に展開するため、ここではシングルクォートのまま渡す。
+      # shellcheck disable=SC2016
       sel=$(: | fzf ${fzfHeight} ${fzfPreviewToggle} --ansi --disabled \
-        --bind "change:reload:sleep 0.1; $rg_cmd {q} || true" \
+        --prompt 'text> ' \
+        --header 'ctrl-r: text / regex' \
+        --bind 'change:reload:sleep 0.1; yazi-rg-search {q}' \
+        --bind 'ctrl-r:transform:[ "$FZF_PROMPT" = "text> " ] && echo "change-prompt(regex> )+reload(yazi-rg-search {q})" || echo "change-prompt(text> )+reload(yazi-rg-search {q})"' \
         --delimiter : \
         --preview 'bat -n --color=always --highlight-line {2} {1}' \
         --preview-window '+{2}/2') || exit 0
