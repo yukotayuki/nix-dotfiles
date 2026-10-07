@@ -1,3 +1,4 @@
+onboarding = false
 [keys]
 # tmux 側の prefix (unbind C-b; set -g prefix C-g) に合わせる
 prefix = "ctrl+g"
