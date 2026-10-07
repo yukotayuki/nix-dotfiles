@@ -42,7 +42,7 @@ jobs:
       - name: statix（アンチパターン検出）
         # hosts/uiro, hosts/gaming は NixOS 慣用の boot.loader.* スタイルが
         # W20（repeated keys）の誤検知を引き起こすため除外する。
-        run: nix run nixpkgs#statix -- check . -i "hosts/uiro" "hosts/gaming"
+        run: nix run nixpkgs#statix -- check . -i "hosts/uiro" -i "hosts/gaming"
 
   eval:
     name: 全設定の評価検証
