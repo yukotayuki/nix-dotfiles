@@ -259,9 +259,10 @@ in
         {
           # カーソル位置のファイルを bat（gruvbox-dark）で開き、less のキー（Emacs 風の移動や / の検索）で読む。
           # キーは ranger の「ページャーで開く」に合わせて i にする。
-          # bat 標準の less は 1 画面に収まると即終了して一瞬で戻るため、less -R を明示する。ディレクトリでは何もしない。
+          # bat 標準の less は 1 画面に収まると即終了して一瞬で戻るため、less を明示する。
+          # less は標準では画面を下から描き、短いファイルが下に寄るため、-c で上から描かせる。ディレクトリでは何もしない。
           on = "i";
-          run = "shell --block -- if [ -f %h ]; then bat --paging=always --pager 'less -R' %h; fi";
+          run = "shell --block -- if [ -f %h ]; then bat --paging=always --pager 'less -Rc' %h; fi";
           desc = "Open the hovered file in bat with less";
         }
         {
@@ -269,8 +270,9 @@ in
           # glow 標準のスタイルには gruvbox が無いため、glamour の dark スタイルの色を
           # コードプレビューと同じ gruvbox-dark.tmTheme の Markdown 用の色に置き換えたスタイルを渡す。
           # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。Markdown 以外では何もしない。
+          # glow 標準のページャー（less -r）も短いファイルが下に寄るため、PAGER で -c を付ける。
           on = "I";
-          run = "shell --block -- case %h in *.md|*.markdown) glow -p -s=${./glamour-gruvbox.json} %h ;; esac";
+          run = "shell --block -- case %h in *.md|*.markdown) PAGER='less -Rc' glow -p -s=${./glamour-gruvbox.json} %h ;; esac";
           desc = "Open the hovered Markdown rendered by glow with less";
         }
         {
