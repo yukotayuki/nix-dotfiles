@@ -123,16 +123,16 @@ in
           cwd = band // {
             bold = true;
           };
-          # コードプレビューのシンタックスハイライトは 16 色に従わないため、Nord の公式 Sublime Text テーマの tmTheme を指定する。
-          # 取得元は bat が Nord テーマとして submodule で固定しているリポジトリとコミットに揃える。
+          # コードプレビューのシンタックスハイライトは UI と分けて、bat（hm-configs/utils/display_filter.nix の theme = gruvbox-dark）に揃える。
+          # 取得元は bat が gruvbox テーマとして submodule で固定しているリポジトリとコミットに揃え、bat と同じ tmTheme を使う。
           syntect_theme = "${
             pkgs.fetchFromGitHub {
-              owner = "crabique";
-              repo = "Nord-plist";
-              rev = "bf92a9e4457dc2f97efebc59bbeac95933ec6515";
-              hash = "sha256-7aGPOtfugFA/tjVyhO87ymHbbeKmzHRHtlV6nIenzw8=";
+              owner = "subnut";
+              repo = "gruvbox-tmTheme";
+              rev = "40503472826e51d87666e548a0634c4f1d74938c";
+              hash = "sha256-Jip1Hd0sRhhPnO+xnA4buVd9Zu93Tr9OBJrsITG6ayQ=";
             }
-          }/Nord.tmTheme";
+          }/gruvbox-dark.tmTheme";
         };
         # ステータスバーのサイズ（左下）とパーセント（右下）は mode の alt で描かれるため、パスの帯と同じ色に揃える。
         # モードの区別は NOR / SEL / UNS の帯（main）の色で付くので、alt は 3 モードとも同じにする。
