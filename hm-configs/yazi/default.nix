@@ -112,6 +112,21 @@ in
         # glow.yazi は piper が出たため非推奨になっており、piper から glow を呼ぶ形にする。
         piper
         ;
+      # toggle-pane（T）でプレビューを全画面にしている間は、j / k でカーソルではなくプレビューを動かす。
+      # toggle-pane は全画面にしたペインの比率を 9999 にするため、プレビューの比率で判定する。
+      preview-jk = pkgs.writeTextDir "main.lua" ''
+        --- @sync entry
+        local function entry(_, job)
+          local dir = job.args[1]
+          if rt.mgr.ratio[3] == 9999 then
+            ya.emit("seek", { dir == "prev" and -1 or 1 })
+          else
+            ya.emit("arrow", { dir })
+          end
+        end
+
+        return { entry = entry }
+      '';
     };
 
     # UI の色は基本的に yazi 標準のまま端末の 16 色に任せる。Ghostty（theme = nord）でも nvim（nord.nvim）でも nord で表示され、
@@ -205,6 +220,9 @@ in
         1
         2
       ];
+      # yazi がマウスの入力を求めると、herdr がマウス操作を yazi に渡してしまい、herdr のドラッグ選択でのコピーが使えなくなる。
+      # マウス操作は使わないため受け取らないようにして、herdr の選択を優先する。
+      mgr.mouse_events = [ ];
       plugin = {
         prepend_fetchers = [
           {
@@ -244,6 +262,16 @@ in
       mgr.prepend_keymap = [
         # キーは yazi 標準・yazi.nvim・既存の割り当てと重ならないものを選ぶ。README の例の g c（標準の ~/.config へ移動）と
         # <C-d>（標準の半ページ下へ）はぶつかるため使わない。
+        {
+          on = "j";
+          run = "plugin preview-jk next";
+          desc = "Next file, or scroll down the maximized preview";
+        }
+        {
+          on = "k";
+          run = "plugin preview-jk prev";
+          desc = "Previous file, or scroll up the maximized preview";
+        }
         {
           on = "T";
           run = "plugin toggle-pane max-preview";
