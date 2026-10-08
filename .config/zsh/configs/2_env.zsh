@@ -27,15 +27,9 @@ if [ "$(uname)" = "Linux" ]; then
     fi
 fi
 
-# fzf
-export FZF_DEFAULT_OPTS='--height 40% --reverse --border --info=inline'
+# fzf（FZF_DEFAULT_OPTS などは home-manager の programs.fzf で設定する。補完の 2 つは対応するオプションが無い）
 export FZF_COMPLETION_TRIGGER=","
 export FZF_COMPLETION_OPTS="
   --height 40% --reverse --border --info=inline
   --preview 'bat -n --color=always {}'
 "
-export FZF_CTRL_T_COMMAND='fd --type f'
-export FZF_CTRL_T_OPTS="
-  --preview 'bat -n --color=always {}'
-  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
-export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"

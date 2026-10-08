@@ -1,7 +1,5 @@
-tap "homebrew/bundle"
 # tap "anomalyco/tap"
 tap "trasta298/tap"
-tap "hashicorp/tap"
 
 # CLI ツール
 # telnet: nixpkgs の inetutils は Darwin 向けビルドが不安定なため homebrew で管理

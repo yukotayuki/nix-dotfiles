@@ -1,12 +1,3 @@
-# fzf key bindings and completion
-if [ -f /run/current-system/sw/share/fzf/key-bindings.zsh ]; then
-    # NixOS
-    source /run/current-system/sw/share/fzf/key-bindings.zsh
-    source /run/current-system/sw/share/fzf/completion.zsh
-elif type fzf &>/dev/null; then
-    source <(fzf --zsh)
-fi
-
 # ghq + fzf: リポジトリへ移動 (^Y)
 # ghq list -p の絶対パスは長くて fzf で見づらいため、相対パスを表示して cd 時に $(ghq root) を付ける。
 # y は home-manager が生成する yazi のラッパーで、q で終了したら最後にいたディレクトリへ移動する。

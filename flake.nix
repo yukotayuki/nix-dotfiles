@@ -24,7 +24,7 @@
       mkHomeConfig =
         {
           system ? "x86_64-linux",
-          pkgs ? (import nixpkgs { inherit system; }),
+          pkgs ? nixpkgs.legacyPackages.${system},
           homeDirectory ? "${homeDirectoryPrefix pkgs}/${username}",
           extraModules ? [ ],
         }:
@@ -72,7 +72,7 @@
 
       mkDarwinConfig =
         {
-          system ? "x86_64-darwin",
+          system ? "aarch64-darwin",
           extraModules,
           hmModules ? [ ],
         }:
@@ -140,7 +140,6 @@
             ./modules/hostSpec.nix
             {
               hostSpec.name = "kinako";
-              hostSpec.enableYubikey = true;
             }
             ./hosts/kinako/darwin-configuration.nix
           ];
@@ -149,7 +148,6 @@
             ./hosts/kinako/home-configuration.nix
             {
               hostSpec.name = "kinako";
-              hostSpec.enableYubikey = true;
             }
           ];
         };
@@ -158,14 +156,14 @@
       formatter = {
         # deadnix / statix は CI で実行するので、treefmt-nix は使わずフォーマッターだけにする。
         # nixfmt-tree はディレクトリを正しく処理できる公式ラッパー（nixfmt 単体は deprecated）。
-        "aarch64-darwin" = (import nixpkgs { system = "aarch64-darwin"; }).nixfmt-tree;
-        "x86_64-linux" = (import nixpkgs { system = "x86_64-linux"; }).nixfmt-tree;
+        "aarch64-darwin" = nixpkgs.legacyPackages."aarch64-darwin".nixfmt-tree;
+        "x86_64-linux" = nixpkgs.legacyPackages."x86_64-linux".nixfmt-tree;
       };
 
       apps = {
         "aarch64-darwin" =
           let
-            pkgs = import nixpkgs { system = "aarch64-darwin"; };
+            pkgs = nixpkgs.legacyPackages."aarch64-darwin";
             git = "${pkgs.git}/bin/git";
           in
           {
@@ -197,7 +195,7 @@
           };
         "x86_64-linux" =
           let
-            pkgs = import nixpkgs { system = "x86_64-linux"; };
+            pkgs = nixpkgs.legacyPackages."x86_64-linux";
             git = "${pkgs.git}/bin/git";
           in
           {

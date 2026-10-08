@@ -1,15 +1,5 @@
-{ pkgs, ... }:
+_:
 
 {
-  home.packages = with pkgs; [
-    deno
-    kubectl
-    nim
-    shellcheck
-  ];
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
+  # kinako 固有の home-manager の設定をここに追加する。
 }
