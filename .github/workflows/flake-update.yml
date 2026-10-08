@@ -15,8 +15,7 @@ jobs:
       pull-requests: write
       # GITHUB_TOKEN で作成した PR では pull_request イベントが発火しないため、
       # 例外的に許可されている workflow_dispatch で CI とビルドを起動する。
-      # PAT / GitHub App トークンを使わない理由:
-      #   シークレットの発行・ローテーション管理が増えるため
+      # PAT / GitHub App トークンはシークレットの発行・ローテーション管理が増えるため使わない。
       actions: write
 
     steps:

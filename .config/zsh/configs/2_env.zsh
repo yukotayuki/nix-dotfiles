@@ -1,8 +1,6 @@
 export LANG=en_US.UTF-8
 
-# Ctrl+W をパス区切り（/）で止める。
-# デフォルトの WORDCHARS に / が含まれているため ~/config/karabiner のような
-# パス全体がひとつの単語として扱われてしまう。/ を除外することで区切りが細かくなる。
+# Ctrl+W をパス区切り（/）で止める（既定の WORDCHARS は / を含む）。
 WORDCHARS="${WORDCHARS/\//}"
 export PATH="$HOME/.local/bin:$PATH"
 export HISTFILE=~/.histfile
@@ -18,14 +16,11 @@ fi
 # Linux distro detection
 if [ "$(uname)" = "Linux" ]; then
     export DISTRI=$(. /etc/lsb-release 2>/dev/null && echo $DISTRIB_ID)
-    # ARM detection for Homebrew on Linux
     if [ "$(uname -m)" = "aarch64" ]; then
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     fi
 
-    # ssh-agent を keychain 経由で管理する（bashrc からの移植）。
-    # セッションをまたいでエージェントを再利用するため、
-    # パスフレーズの入力は初回のみで済む。
+    # keychain でセッションをまたいで ssh-agent を再利用し、パスフレーズの入力を初回だけにする。
     if command -v keychain &>/dev/null; then
         eval "$(keychain --eval --quiet --confallhosts)"
     fi

@@ -12,10 +12,7 @@ in
     inherit isNixOS;
   };
 
-  # dotfiles リポジトリを ghq のディレクトリ構造上に symlink する。
-  # ghq get ではなく手動 clone で ~/dotfiles に置いているが、
-  # fzf-cd / fzf-open 関数が ghq list を前提としているため
-  # ghq のパスからも参照できるようにしておく。
+  # fzf-cd / fzf-open 関数が ghq list を前提としているため、手動 clone した ~/dotfiles を ghq のパスにも置く。
   home.file."work/repositories/github.com/yukotayuki/nix-dotfiles".source =
     config.lib.file.mkOutOfStoreSymlink dotDir;
 

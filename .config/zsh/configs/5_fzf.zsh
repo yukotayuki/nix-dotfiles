@@ -8,11 +8,8 @@ elif type fzf &>/dev/null; then
 fi
 
 # ghq + fzf: リポジトリへ移動 (^Y)
-# fzf の表示は ghq list（相対パス）にして視認性を保ちつつ、
-# cd 先は $(ghq root)/$selected で絶対パスに変換する。
-# ghq list -p を表示に使わない理由: 絶対パスは長くて fzf で見づらい。
-# fzf 上で Enter なら cd、Ctrl-Y なら選んだリポジトリで yazi を開く。
-# yazi は home-manager が生成する y ラッパー経由で起動し、q で終了したら最後にいたディレクトリへ移動する。
+# ghq list -p の絶対パスは長くて fzf で見づらいため、相対パスを表示して cd 時に $(ghq root) を付ける。
+# y は home-manager が生成する yazi のラッパーで、q で終了したら最後にいたディレクトリへ移動する。
 function fzf-cd-git-repository() {
     local -a lines
     lines=("${(@f)$(ghq list | fzf --expect=ctrl-y --header='Enter: cd / Ctrl-Y: yazi')}")

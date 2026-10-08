@@ -1,16 +1,13 @@
 { pkgs, ... }:
 let
-  # Nord の公式パレットの nord2。ヘッダーとステータスバーの帯の背景に使う。
   nord2 = "#434C5E";
 
-  # yazi 内の fzf は、シェルの FZF_DEFAULT_OPTS（高さ 40%）を引き継いだうえで全画面に揃える。
-  # 標準の zoxide プラグイン（Z）が全画面で開くため、それに合わせる。
+  # シェルの FZF_DEFAULT_OPTS（高さ 40%）を上書きし、全画面で開く標準の zoxide プラグイン（Z）に揃える。
   fzfHeight = "--height=100%";
   # プレビューと ctrl-/ の切り替えは zsh の FZF_CTRL_T_OPTS / FZF_ALT_C_OPTS に揃える。
   fzfPreviewToggle = "--bind 'ctrl-/:change-preview-window(down|hidden|)'";
 
   # z の標準動作（yazi 同梱の fzf プラグイン）は fzf の高さを外から渡せないため、同じ動きのスクリプトに置き換える。
-  # ディレクトリを選んだら移動し、ファイルを選んだらカーソルを合わせる。
   fzfJump = pkgs.writeShellApplication {
     name = "yazi-fzf-jump";
     runtimeInputs = with pkgs; [
@@ -31,7 +28,6 @@ let
     '';
   };
   # s / S の標準動作（入力を確定してから yazi に結果を並べる）を、fzf でリアルタイムに絞り込みとプレビューを行う形に置き換える。
-  # 選んだファイルは yazi でカーソルを合わせる。
   fzfFind = pkgs.writeShellApplication {
     name = "yazi-fzf-find";
     runtimeInputs = with pkgs; [
@@ -46,8 +42,8 @@ let
       ya emit reveal "$PWD/$sel"
     '';
   };
-  # fzf の reload から呼ぶ rg。VS Code の全体検索に合わせ、既定は文字列として検索し、プロンプトが regex> のときだけ正規表現として扱う。
-  # --smart-case だと検索語に大文字が 1 つでも入ると区別が有効になり、camelCase の一部（例: localV）で LocalVideoStream に当たらないため、常に大文字小文字を無視する。
+  # fzf の reload から呼ぶ。VS Code の全体検索に合わせ、プロンプトが regex> のとき以外は固定文字列で検索する。
+  # --smart-case だと localV のような camelCase の一部で LocalVideoStream に当たらないため、常に大文字小文字を無視する。
   rgSearch = pkgs.writeShellApplication {
     name = "yazi-rg-search";
     runtimeInputs = [ pkgs.ripgrep ];
@@ -69,8 +65,7 @@ let
       fzf
       bat
     ];
-    # 入力のたびに rg を再実行する。空の入力で全ファイルを走査しないよう、起動直後は候補を空にする。
-    # ctrl-r でプロンプトを text> / regex> と切り替え、同じ検索語で検索し直す。
+    # 空の入力で全ファイルを走査しないよう、起動直後は候補を空にする。
     text = ''
       # $FZF_PROMPT は fzf が transform の実行時に展開するため、ここではシングルクォートのまま渡す。
       # shellcheck disable=SC2016
@@ -111,12 +106,11 @@ in
         ;
     };
 
-    # UI の色は基本的に yazi 標準のまま端末の 16 色に任せる。Ghostty（theme = nord）でも nvim（nord.nvim）でも nord で表示され、
-    # 端末側の配色を変えたときにも追従するため。star の多い nord の flavor が無いので flavor は使わない。
+    # UI の色は基本的に端末の 16 色に任せ、端末側の配色（Ghostty と nvim は nord）に追従させる。
+    # star の多い nord の flavor が無いので flavor は使わない。
     theme =
       let
-        # ヘッダーのパスと、ステータスバーのサイズ・パーセントに使う帯の色。
-        # 文字は端末の 16 色の white（yazi では明るい白の 15 番、Ghostty の nord では #eceff4）にする。
+        # white は yazi では明るい白の 15 番（Ghostty の nord では #eceff4）。
         # 背景は 16 色だと black（#3b4252）では暗く 8 番（#596377）では明るすぎるため、nord2 を直接指定する。
         band = {
           fg = "white";
@@ -125,12 +119,12 @@ in
       in
       {
         mgr = {
-          # 親の列を消した分、カレントディレクトリはヘッダーで確かめるため帯にして目立たせる。
+          # 親の列が無いので、カレントディレクトリをヘッダーの帯で目立たせる。
           cwd = band // {
             bold = true;
           };
-          # コードプレビューのシンタックスハイライトは UI と分けて、bat（hm-configs/utils/display_filter.nix の theme = gruvbox-dark）に揃える。
-          # 取得元は bat が gruvbox テーマとして submodule で固定しているリポジトリとコミットに揃え、bat と同じ tmTheme を使う。
+          # コードプレビューは bat（hm-configs/utils/display_filter.nix の theme = gruvbox-dark）に揃える。
+          # rev は bat が submodule で固定しているコミットと同じにする。
           syntect_theme = "${
             pkgs.fetchFromGitHub {
               owner = "subnut";
@@ -140,8 +134,8 @@ in
             }
           }/gruvbox-dark.tmTheme";
         };
-        # ステータスバーのサイズ（左下）とパーセント（右下）は mode の alt で描かれるため、パスの帯と同じ色に揃える。
-        # モードの区別は NOR / SEL / UNS の帯（main）の色で付くので、alt は 3 モードとも同じにする。
+        # ステータスバーのサイズ（左下）とパーセント（右下）は mode の alt で描かれる。
+        # モードの区別は main の色で付くので、alt は 3 モードとも同じにする。
         mode = {
           normal_alt = band;
           select_alt = band;
@@ -156,7 +150,7 @@ in
       require("githead"):setup()
 
       -- 親の列を消した 2 列表示（ratio[1] == 0）のまま、境界線のドラッグで一覧とプレビューの幅を変えられるようにする。
-      -- 標準の Rail:drag は親の列の幅を最低 1 にするため、ドラッグすると幅 1 の親の列が現れて 3 列になり、表示が崩れる。
+      -- 標準の Rail:drag は親の列の幅を最低 1 にするため、ドラッグすると 3 列になって表示が崩れる。
       local rail_drag = Rail.drag
       function Rail:drag(event)
         if rt.mgr.ratio[1] ~= 0 or event.type ~= "legacy" then
@@ -177,9 +171,8 @@ in
         end
       end
 
-      -- ヘッダーの左に user@host を出す。複数のマシンを行き来するので、どのマシンの yazi かを見分ける。
-      -- ステータスバー左下のモード表示（NOR）と同じ丸い帯にし、続くカレントディレクトリ（標準の cwd、order 1000）も帯でつなぐ。
-      -- パスの帯の色は theme の mgr.cwd で指定する。
+      -- どのマシンの yazi かを見分けるため、ヘッダーの左に user@host を出す。
+      -- 続く標準の cwd（order 1000）も帯でつなぐ。帯の色は theme の mgr.cwd で指定する。
       Header:children_add(function()
         local main, sep = th.mode.normal_main, th.status.sep_left
         return ui.Line {
@@ -205,7 +198,6 @@ in
         return ""
       end, 3300, Status.LEFT)
 
-      -- ステータスバーの右にカーソル位置のファイルの更新日時を出す。
       -- nix store のファイルは更新日時が 1（1970 年）に揃えられていて意味がないため、1 以下は出さない。
       Status:children_add(function(self)
         local h = self._current.hovered
@@ -218,7 +210,7 @@ in
     '';
 
     settings = {
-      # 親の列を消し、一覧 3 : プレビュー 7 にする（標準は [ 1, 4, 3 ]）。親へは h で戻れる。
+      # 親の列を消す（標準は [ 1, 4, 3 ]）。親へは h で戻れる。
       mgr.ratio = [
         0
         1
@@ -257,19 +249,17 @@ in
         # キーは yazi 標準・yazi.nvim・既存の割り当てと重ならないものを選ぶ。README の例の g c（標準の ~/.config へ移動）と
         # <C-d>（標準の半ページ下へ）はぶつかるため使わない。
         {
-          # カーソル位置のファイルを bat（gruvbox-dark）で開き、less のキー（Emacs 風の移動や / の検索）で読む。
           # キーは ranger の「ページャーで開く」に合わせて i にする。
           # bat 標準の less は 1 画面に収まると即終了して一瞬で戻るため、less を明示する。
-          # less は標準では画面を下から描き、短いファイルが下に寄るため、-c で上から描かせる。ディレクトリでは何もしない。
+          # less は標準では画面を下から描き、短いファイルが下に寄るため、-c で上から描かせる。
           on = "i";
           run = "shell --block -- if [ -f %h ]; then bat --paging=always --pager 'less -Rc' %h; fi";
           desc = "Open the hovered file in bat with less";
         }
         {
-          # Markdown は I で glow に整形させて less で開く。i（bat のテキスト表示）と押し分ける。
           # glow 標準のスタイルには gruvbox が無いため、glamour の dark スタイルの色を
           # コードプレビューと同じ gruvbox-dark.tmTheme の Markdown 用の色に置き換えたスタイルを渡す。
-          # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。Markdown 以外では何もしない。
+          # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。
           # glow 標準のページャー（less -r）も短いファイルが下に寄るため、PAGER で -c を付ける。
           on = "I";
           run = "shell --block -- case %h in *.md|*.markdown) PAGER='less -Rc' glow -p -s=${./glamour-gruvbox.json} %h ;; esac";
@@ -331,8 +321,7 @@ in
             ","
             "f"
           ];
-          # nvim の ,f（yazi.nvim）で開いた yazi を同じキーで閉じる。
-          # nvim の子プロセスにだけ設定される $NVIM で判定し、単体起動の yazi では何もしない。
+          # nvim の ,f（yazi.nvim）で開いた yazi を同じキーで閉じる。$NVIM は nvim の子プロセスにだけ設定される。
           # && で書くと単体起動時に終了コード 1 になり、yazi のタスク一覧に Failed が残るため || で書く。
           run = ''shell -- [ -z "$NVIM" ] || ya emit quit'';
           desc = "Close yazi.nvim (same key as ,f in nvim)";

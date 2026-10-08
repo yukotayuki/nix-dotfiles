@@ -81,25 +81,18 @@
           modules = [
             home-manager.darwinModules.home-manager
             {
-              # home-manager の nixos/common.nix は home.homeDirectory を
-              # users.users.<name>.home から導出する。未設定だと null になり
-              # ビルド時に `absolute path` 型チェックで失敗する。
-              # home.nix 側で設定しない理由:
-              #   home.nix は standalone / darwin で共用しているため、
-              #   darwin 固有のパスはここで設定する方が責務が明確。
+              # home-manager は home.homeDirectory をこの値から導出し、未設定だと null になり、ビルド時の absolute path 型チェックで失敗する。
+              # home.nix は standalone と共用なので、darwin 固有のパスはここで設定する。
               users.users."${username}".home = "/Users/${username}";
               home-manager = {
                 useGlobalPkgs = true;
                 useUserPackages = true;
-                # 初回 activation 時に home-manager が管理したいファイル
-                # （.zshrc, .config/git/ignore など）が既存の場合、
-                # abort せずに <file>.bak へ退避してから上書きする。
+                # 初回 activation で既存の .zshrc などと衝突しても abort せず、<file>.bak へ退避する。
                 backupFileExtension = "bak";
                 users."${username}" = import ./home.nix;
                 extraSpecialArgs = {
                   isNixOS = false;
                 };
-                # ホスト固有の home-manager モジュール（hostSpec 設定など）
                 sharedModules = hmModules;
               };
             }
@@ -163,11 +156,8 @@
       };
 
       formatter = {
-        # nix fmt で全 .nix ファイルを整形するエントリポイント。
-        # treefmt-nix を使わない理由:
-        #   deadnix / statix は CI で既にカバー済みのため、
-        #   フォーマッターのみで十分。nixfmt-tree はディレクトリを
-        #   正しく処理できる公式ラッパー（nixfmt 単体は deprecated）。
+        # deadnix / statix は CI で実行するので、treefmt-nix は使わずフォーマッターだけにする。
+        # nixfmt-tree はディレクトリを正しく処理できる公式ラッパー（nixfmt 単体は deprecated）。
         "aarch64-darwin" = (import nixpkgs { system = "aarch64-darwin"; }).nixfmt-tree;
         "x86_64-linux" = (import nixpkgs { system = "x86_64-linux"; }).nixfmt-tree;
       };

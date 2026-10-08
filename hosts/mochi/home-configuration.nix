@@ -26,9 +26,7 @@
     watch
   ];
 
-  # mkOutOfStoreSymlink を使う理由:
-  #   試験導入中で頻繁に設定を調整するため、Nix store へのコピーではなく
-  #   dotfiles への直接リンクにして rebuild なしで反映できるようにする。
+  # 試験導入中で頻繁に設定を調整するため、dotfiles へ直接リンクして rebuild なしで反映できるようにする。
   home.file.".config/herdr/config.toml".source =
     config.lib.file.mkOutOfStoreSymlink "${dotDir}/.config/herdr/config.toml";
 

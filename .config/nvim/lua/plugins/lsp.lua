@@ -3,8 +3,7 @@ return {
     'williamboman/mason.nvim',
     config = function()
       require('mason').setup()
-      -- shfmt は LSP サーバーではなくフォーマッタのため mason-lspconfig ではなく
-      -- mason の MasonInstall で管理する。conform.lua の sh フォーマッタとセットで機能する。
+      -- shfmt は LSP サーバーではないので mason-lspconfig ではなく MasonInstall で入れる。conform.lua の sh フォーマッタが使う。
       local mr = require('mason-registry')
       if not mr.is_installed('shfmt') then
         vim.cmd('MasonInstall shfmt')
@@ -20,7 +19,6 @@ return {
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
-      -- 全サーバー共通のケーパビリティ設定（nvim 0.11+ の vim.lsp.config API）
       vim.lsp.config('*', {
         capabilities = vim.tbl_deep_extend(
           'force',
@@ -36,9 +34,7 @@ return {
         ),
       })
 
-      -- biome は mason-lspconfig のハンドラーではなく npx 経由で起動する理由:
-      --   mason でインストールした biome はプロジェクトローカルの biome と
-      --   バージョンが異なる場合に競合するため、npx でプロジェクトの biome を使う。
+      -- mason の biome はプロジェクトローカルの biome とバージョンが異なると競合するため、npx でプロジェクトの biome を使う。
       vim.lsp.config('biome', {
         cmd = { 'npx', 'biome', 'lsp-proxy' },
       })
