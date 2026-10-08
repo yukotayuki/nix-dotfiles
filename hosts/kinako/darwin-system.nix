@@ -10,7 +10,6 @@
   environment.shells = [ pkgs.zsh ];
 
   # homebrew.enable など一部のオプションはプライマリユーザーが必要。
-  # nix-darwin の multi-user 対応移行に伴い明示的に指定が必要になった。
   system.primaryUser = "joo";
 
   system = {
@@ -27,16 +26,11 @@
     stateVersion = 5;
   };
 
-  # nix.settings / nix.extraOptions を使わない理由:
-  #   Determinate Nix は独自のデーモンと nix.conf を管理しており、
-  #   nix-darwin の nix 管理機能と競合する（有効化すると起動時に
-  #   "Determinate detected, aborting" エラーになる）。
-  #   nix.enable = false にすることで nix 管理を Determinate に委譲する。
+  # Determinate Nix が独自のデーモンと nix.conf を管理しており、nix-darwin の nix 管理と競合するため無効にする
+  # （有効化すると "Determinate detected, aborting" エラーになる）。nix.settings / nix.extraOptions も使わない。
   nix.enable = false;
 
-  # Determinate Nix は /etc/nix/nix.conf を独自管理しており、
-  # nix.conf.d/ は読まれない。代わりに nix.conf 内の
-  # `!include nix.custom.conf` がユーザー設定の差し込み口として用意されている。
+  # Determinate Nix の nix.conf は nix.conf.d/ を読まず、`!include nix.custom.conf` がユーザー設定の差し込み口になっている。
   environment.etc."nix/nix.custom.conf".text = ''
     extra-trusted-users = joo
   '';

@@ -5,10 +5,8 @@ return {
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
       defaults = {
-        -- treesitter ハイライトを使わない理由:
-        --   nvim-treesitter の新バージョンで parsers.ft_to_lang が削除され、
-        --   telescope の previewer がこれを呼び出してクラッシュする。
-        --   vim の組み込みシンタックスで代替できるため影響は軽微。
+        -- nvim-treesitter の新バージョンで削除された parsers.ft_to_lang を previewer が呼び出してクラッシュするため無効にする。
+        -- vim の組み込みシンタックスで代替できるため影響は軽微。
         preview = { treesitter = false },
       },
     },

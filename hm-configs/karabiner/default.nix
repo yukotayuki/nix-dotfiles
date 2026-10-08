@@ -12,9 +12,7 @@ let
 in
 lib.mkIf isDarwin {
 
-  # mkOutOfStoreSymlink を使う理由:
-  #   Karabiner は GUI 操作で設定を書き込むため、
-  #   Nix store への読み取り専用リンクではなく dotfiles への直接リンクにする。
+  # Karabiner は GUI 操作で設定を書き込むため、Nix store ではなく dotfiles へ直接リンクする。
   home.file = {
     ".config/karabiner/karabiner.json".source = mkLink ".config/karabiner/karabiner.json";
     ".config/karabiner/assets/complex_modifications".source =

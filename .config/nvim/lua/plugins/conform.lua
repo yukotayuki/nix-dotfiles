@@ -13,12 +13,12 @@ return {
           nix = { 'nixfmt' },
           sh = { 'shfmt' },
         },
-        -- changed from 500 ms to 5000 ms due to prettier timeout
+        -- prettier times out at 500 ms
         format_on_save = { timeout_ms = 5000 },
         formatters = {
           shfmt = {
             command = 'shfmt',
-            -- prepend_args を推奨しているけど、append_args じゃないと反映されない
+            -- prepend_args が推奨されているが、append_args でないと反映されない
             append_args = { '-i', '2', '-ci', '-bn' },
           },
         },

@@ -4,9 +4,7 @@ let
   mkLink = path: config.lib.file.mkOutOfStoreSymlink "${dotDir}/.config/ghostty/${path}";
 in
 {
-  # mkOutOfStoreSymlink を使う理由:
-  #   Ghostty は設定の変更を config に直接書き戻す場合があるため、
-  #   Nix store への読み取り専用リンクではなく dotfiles への直接リンクにする。
+  # Ghostty は設定の変更を config に直接書き戻す場合があるため、Nix store ではなく dotfiles へ直接リンクする。
   home.file = {
     ".config/ghostty/config".source = mkLink "config";
     ".config/ghostty/font.conf".source = mkLink "font.conf";

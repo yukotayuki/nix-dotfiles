@@ -59,7 +59,6 @@ jobs:
 
       - name: kinako を評価
         # nix-darwin は macOS でしかビルドできないため eval のみ実施。
-        # 評価エラー（型ミス・未定義の引数など）はここで検知できる。
         run: nix eval .#darwinConfigurations.kinako.system.drvPath
 
       - name: mochi を評価

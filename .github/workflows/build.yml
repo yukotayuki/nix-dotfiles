@@ -2,11 +2,8 @@ name: Build
 
 on:
   # flake-update.yml が更新 PR のブランチを指定して起動する（手動実行も可）
-  # schedule を使わない理由:
-  #   時刻ずらしでは flake-update との実行順が保証されず、
-  #   main の更新前の flake.lock をビルドしてしまうため
-  # workflow_run を使わない理由:
-  #   起動元（main）の ref で実行されるため、PR ブランチをビルドできない
+  # schedule は flake-update との実行順が保証されず、更新前の flake.lock をビルドしてしまうため使わない。
+  # workflow_run は起動元（main）の ref で実行され、PR ブランチをビルドできないため使わない。
   workflow_dispatch:
 
 permissions:

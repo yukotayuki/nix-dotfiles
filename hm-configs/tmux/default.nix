@@ -3,8 +3,7 @@
 {
   programs.tmux = {
     enable = true;
-    # TPM を使わない理由:
-    #   home-manager の plugins で宣言管理すると prefix+I での手動インストールが不要になる。
+    # TPM ではなく home-manager で宣言管理し、prefix+I での手動インストールを不要にする。
     plugins = with pkgs.tmuxPlugins; [
       sensible
       nord
