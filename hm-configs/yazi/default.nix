@@ -118,9 +118,40 @@ in
     initLua = ''
       require("git"):setup()
       require("full-border"):setup()
+
+      -- ヘッダーの左に user@host を出す。複数のマシンを行き来するので、どのマシンの yazi かを見分ける。
+      Header:children_add(function()
+        return ui.Span(ya.user_name() .. "@" .. ya.host_name() .. ":"):fg("blue")
+      end, 500, Header.LEFT)
+
+      -- ステータスバーの左に symlink のリンク先を出す。home-manager が置く設定ファイルは nix store への symlink なので、実体を確かめられる。
+      Status:children_add(function(self)
+        local h = self._current.hovered
+        if h and h.link_to then
+          return " -> " .. tostring(h.link_to)
+        end
+        return ""
+      end, 3300, Status.LEFT)
+
+      -- ステータスバーの右にカーソル位置のファイルの更新日時を出す。
+      -- nix store のファイルは更新日時が 1（1970 年）に揃えられていて意味がないため、1 以下は出さない。
+      Status:children_add(function(self)
+        local h = self._current.hovered
+        local time = h and math.floor(h.cha.mtime or 0) or 0
+        if time <= 1 then
+          return ""
+        end
+        return ui.Line { ui.Span(os.date("%Y-%m-%d %H:%M", time)):fg("blue"), " " }
+      end, 500, Status.RIGHT)
     '';
 
     settings = {
+      # 親の列を残したまま、プレビューを広げる（標準は [ 1, 4, 3 ]）。
+      mgr.ratio = [
+        1
+        3
+        4
+      ];
       plugin = {
         prepend_fetchers = [
           {
