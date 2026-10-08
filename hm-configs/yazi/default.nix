@@ -224,8 +224,11 @@ in
             run = "ouch";
           }
           {
+            # glow 標準のスタイルには gruvbox が無いため、glamour の dark スタイルの色を、
+            # コードプレビューと同じ gruvbox-dark.tmTheme の Markdown 用の色に置き換えたスタイルを渡す。
+            # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。
             url = "*.md";
-            run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'';
+            run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${./glamour-gruvbox.json} "$1"'';
           }
         ];
       };
