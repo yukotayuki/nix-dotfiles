@@ -25,6 +25,7 @@
 | Homebrew 本体 | 手動インストール（macOS のみ） | nix-darwin は Homebrew がすでに入っていることを前提とするため |
 | Claude Code | curl インストール（手動） | 更新頻度が高く nix 管理のコストが見合わない |
 | gcloud | Homebrew 経由 | nixpkgs の更新が追いつかないため |
+| mcp-toolbox | Brewfile（`brew bundle`、mochi のみ） | nixpkgs 未収録のため |
 | GUI アプリ（mochi） | Brewfile（`brew bundle`） | home-manager のみ構成のため darwin homebrew モジュールが使えない |
 
 ### Homebrew の cleanup 設定

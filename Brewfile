@@ -52,6 +52,10 @@ cask "font-noto-nerd-font"
 # nixpkgs の更新が追いつかないため homebrew で管理
 cask "gcloud-cli"
 
+# MCP server for databases（BigQuery MCP の実体）
+# nixpkgs 未収録のため homebrew で管理
+brew "mcp-toolbox"
+
 # Mac App Store
 mas "GarageBand", id: 682658836
 mas "iMovie", id: 408981434
