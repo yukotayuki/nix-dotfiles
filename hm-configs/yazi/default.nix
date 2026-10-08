@@ -155,6 +155,28 @@ in
       -- ヘッダーのパスの帯の右（order 2000）に、git のブランチと変更状況を出す。
       require("githead"):setup()
 
+      -- 親の列を消した 2 列表示（ratio[1] == 0）のまま、境界線のドラッグで一覧とプレビューの幅を変えられるようにする。
+      -- 標準の Rail:drag は親の列の幅を最低 1 にするため、ドラッグすると幅 1 の親の列が現れて 3 列になり、表示が崩れる。
+      local rail_drag = Rail.drag
+      function Rail:drag(event)
+        if rt.mgr.ratio[1] ~= 0 or event.type ~= "legacy" then
+          return rail_drag(self, event)
+        end
+        -- 一覧の左端の線（rail-left）は、2 列表示では動かさない。
+        if self._id ~= "rail-right" then
+          return
+        end
+        local c = self._chunks
+        local x = math.max(event.x, c[2].x + 2)
+        local preview = math.max(1, c[3].right - x)
+        local current = math.max(1, c[2].w + c[3].w - preview)
+        local r = rt.mgr.ratio
+        if r[2] ~= current or r[3] ~= preview then
+          rt.mgr.ratio = { 0, current, preview }
+          ui.render()
+        end
+      end
+
       -- ヘッダーの左に user@host を出す。複数のマシンを行き来するので、どのマシンの yazi かを見分ける。
       -- ステータスバー左下のモード表示（NOR）と同じ丸い帯にし、続くカレントディレクトリ（標準の cwd、order 1000）も帯でつなぐ。
       -- パスの帯の色は theme の mgr.cwd で指定する。
