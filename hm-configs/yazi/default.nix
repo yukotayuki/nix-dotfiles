@@ -105,7 +105,6 @@ in
         smart-enter
         full-border
         ouch
-        toggle-pane
         vcs-files
         githead
         diff
@@ -245,17 +244,12 @@ in
         # キーは yazi 標準・yazi.nvim・既存の割り当てと重ならないものを選ぶ。README の例の g c（標準の ~/.config へ移動）と
         # <C-d>（標準の半ページ下へ）はぶつかるため使わない。
         {
-          # プレビューを全画面にする代わりに、bat（gruvbox-dark）を less で開く。less のキー（Emacs 風の移動や / の検索）で読める。
+          # カーソル位置のファイルを bat（gruvbox-dark）で開き、less のキー（Emacs 風の移動や / の検索）で読む。
+          # キーは ranger の「ページャーで開く」に合わせて i にする。
           # bat 標準の less は 1 画面に収まると即終了して一瞬で戻るため、less -R を明示する。ディレクトリでは何もしない。
-          on = "T";
+          on = "i";
           run = "shell --block -- if [ -f %h ]; then bat --paging=always --pager 'less -R' %h; fi";
           desc = "Open the hovered file in bat with less";
-        }
-        {
-          # 一覧を 3 : 7 にしているため、長いファイル名を見たいときはプレビューを隠して一覧を全幅にする。
-          on = "<C-p>";
-          run = "plugin toggle-pane min-preview";
-          desc = "Hide or show the preview pane";
         }
         {
           on = [
