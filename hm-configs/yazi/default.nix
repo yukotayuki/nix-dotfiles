@@ -93,8 +93,11 @@ in
     # q で終了したときだけ cwd を移す。Q で終了した場合は移動しない（yazi 標準の動作）。
     shellWrapperName = "y";
     # nixpkgs の yazi ラッパーは poppler / ffmpeg / imagemagick / jq / fd / rg / fzf / zoxide を同梱しているため、
-    # ここでは ouch.yazi が呼ぶ ouch 本体だけを足す。
-    extraPackages = [ pkgs.ouch ];
+    # ここでは ouch.yazi が呼ぶ ouch 本体と、Markdown のプレビューに使う glow だけを足す。
+    extraPackages = with pkgs; [
+      ouch
+      glow
+    ];
 
     plugins = {
       inherit (pkgs.yaziPlugins)
@@ -102,6 +105,12 @@ in
         smart-enter
         full-border
         ouch
+        toggle-pane
+        vcs-files
+        githead
+        diff
+        # glow.yazi は piper が出たため非推奨になっており、piper から glow を呼ぶ形にする。
+        piper
         ;
     };
 
@@ -146,6 +155,8 @@ in
     initLua = ''
       require("git"):setup()
       require("full-border"):setup()
+      -- ヘッダーのパスの帯の右（order 2000）に、git のブランチと変更状況を出す。
+      require("githead"):setup()
 
       -- ヘッダーの左に user@host を出す。複数のマシンを行き来するので、どのマシンの yazi かを見分ける。
       -- ステータスバー左下のモード表示（NOR）と同じ丸い帯にし、続くカレントディレクトリ（標準の cwd、order 1000）も帯でつなぐ。
@@ -212,6 +223,10 @@ in
             mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}";
             run = "ouch";
           }
+          {
+            url = "*.md";
+            run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'';
+          }
         ];
       };
       opener.extract = [
@@ -224,6 +239,32 @@ in
 
     keymap = {
       mgr.prepend_keymap = [
+        # キーは yazi 標準・yazi.nvim・既存の割り当てと重ならないものを選ぶ。README の例の g c（標準の ~/.config へ移動）と
+        # <C-d>（標準の半ページ下へ）はぶつかるため使わない。
+        {
+          on = "T";
+          run = "plugin toggle-pane max-preview";
+          desc = "Maximize or restore the preview pane";
+        }
+        {
+          # 一覧を 3 : 7 にしているため、長いファイル名を見たいときはプレビューを隠して一覧を全幅にする。
+          on = "<C-p>";
+          run = "plugin toggle-pane min-preview";
+          desc = "Hide or show the preview pane";
+        }
+        {
+          on = [
+            "g"
+            "s"
+          ];
+          run = "plugin vcs-files";
+          desc = "Show Git file changes";
+        }
+        {
+          on = "C";
+          run = "plugin diff";
+          desc = "Diff the selected with the hovered file";
+        }
         {
           on = "l";
           run = "plugin smart-enter";
