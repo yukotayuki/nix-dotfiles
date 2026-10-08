@@ -93,7 +93,7 @@ in
     # q で終了したときだけ cwd を移す。Q で終了した場合は移動しない（yazi 標準の動作）。
     shellWrapperName = "y";
     # nixpkgs の yazi ラッパーは poppler / ffmpeg / imagemagick / jq / fd / rg / fzf / zoxide を同梱しているため、
-    # ここでは ouch.yazi が呼ぶ ouch 本体と、Markdown のプレビューに使う glow だけを足す。
+    # ここでは ouch.yazi が呼ぶ ouch 本体と、I で Markdown を整形して開く glow だけを足す。
     extraPackages = with pkgs; [
       ouch
       glow
@@ -108,8 +108,6 @@ in
         vcs-files
         githead
         diff
-        # glow.yazi は piper が出たため非推奨になっており、piper から glow を呼ぶ形にする。
-        piper
         ;
     };
 
@@ -222,13 +220,6 @@ in
             mime = "application/{*zip,tar,bzip2,7z*,rar,xz,zstd,java-archive}";
             run = "ouch";
           }
-          {
-            # glow 標準のスタイルには gruvbox が無いため、glamour の dark スタイルの色を、
-            # コードプレビューと同じ gruvbox-dark.tmTheme の Markdown 用の色に置き換えたスタイルを渡す。
-            # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。
-            url = "*.md";
-            run = ''piper -- CLICOLOR_FORCE=1 glow -w=$w -s=${./glamour-gruvbox.json} "$1"'';
-          }
         ];
       };
       opener.extract = [
@@ -250,6 +241,15 @@ in
           on = "i";
           run = "shell --block -- if [ -f %h ]; then bat --paging=always --pager 'less -R' %h; fi";
           desc = "Open the hovered file in bat with less";
+        }
+        {
+          # Markdown は I で glow に整形させて less で開く。i（bat のテキスト表示）と押し分ける。
+          # glow 標準のスタイルには gruvbox が無いため、glamour の dark スタイルの色を
+          # コードプレビューと同じ gruvbox-dark.tmTheme の Markdown 用の色に置き換えたスタイルを渡す。
+          # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。Markdown 以外では何もしない。
+          on = "I";
+          run = "shell --block -- case %h in *.md|*.markdown) glow -p -s=${./glamour-gruvbox.json} %h ;; esac";
+          desc = "Open the hovered Markdown rendered by glow with less";
         }
         {
           on = [
