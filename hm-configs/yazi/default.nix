@@ -1,5 +1,8 @@
 { pkgs, ... }:
 let
+  # Nord の公式パレットの nord2。ヘッダーとステータスバーの帯の背景に使う。
+  nord2 = "#434C5E";
+
   # yazi 内の fzf は、シェルの FZF_DEFAULT_OPTS（高さ 40%）を引き継いだうえで全画面に揃える。
   # 標準の zoxide プラグイン（Z）が全画面で開くため、それに合わせる。
   fzfHeight = "--height=100%";
@@ -102,27 +105,66 @@ in
         ;
     };
 
-    # UI の色は yazi 標準のまま端末の 16 色に任せる。Ghostty（theme = nord）でも nvim（nord.nvim）でも nord で表示され、
+    # UI の色は基本的に yazi 標準のまま端末の 16 色に任せる。Ghostty（theme = nord）でも nvim（nord.nvim）でも nord で表示され、
     # 端末側の配色を変えたときにも追従するため。star の多い nord の flavor が無いので flavor は使わない。
-    # コードプレビューのシンタックスハイライトだけは 16 色に従わないため、Nord の公式 Sublime Text テーマの tmTheme を指定する。
-    # 取得元は bat が Nord テーマとして submodule で固定しているリポジトリとコミットに揃える。
-    theme.mgr.syntect_theme = "${
-      pkgs.fetchFromGitHub {
-        owner = "crabique";
-        repo = "Nord-plist";
-        rev = "bf92a9e4457dc2f97efebc59bbeac95933ec6515";
-        hash = "sha256-7aGPOtfugFA/tjVyhO87ymHbbeKmzHRHtlV6nIenzw8=";
-      }
-    }/Nord.tmTheme";
+    theme =
+      let
+        # ヘッダーのパスと、ステータスバーのサイズ・パーセントに使う帯の色。
+        # 文字は端末の 16 色の white（yazi では明るい白の 15 番、Ghostty の nord では #eceff4）にする。
+        # 背景は 16 色だと black（#3b4252）では暗く 8 番（#596377）では明るすぎるため、nord2 を直接指定する。
+        band = {
+          fg = "white";
+          bg = nord2;
+        };
+      in
+      {
+        mgr = {
+          # 親の列を消した分、カレントディレクトリはヘッダーで確かめるため帯にして目立たせる。
+          cwd = band // {
+            bold = true;
+          };
+          # コードプレビューのシンタックスハイライトは 16 色に従わないため、Nord の公式 Sublime Text テーマの tmTheme を指定する。
+          # 取得元は bat が Nord テーマとして submodule で固定しているリポジトリとコミットに揃える。
+          syntect_theme = "${
+            pkgs.fetchFromGitHub {
+              owner = "crabique";
+              repo = "Nord-plist";
+              rev = "bf92a9e4457dc2f97efebc59bbeac95933ec6515";
+              hash = "sha256-7aGPOtfugFA/tjVyhO87ymHbbeKmzHRHtlV6nIenzw8=";
+            }
+          }/Nord.tmTheme";
+        };
+        # ステータスバーのサイズ（左下）とパーセント（右下）は mode の alt で描かれるため、パスの帯と同じ色に揃える。
+        # モードの区別は NOR / SEL / UNS の帯（main）の色で付くので、alt は 3 モードとも同じにする。
+        mode = {
+          normal_alt = band;
+          select_alt = band;
+          unset_alt = band;
+        };
+      };
 
     initLua = ''
       require("git"):setup()
       require("full-border"):setup()
 
       -- ヘッダーの左に user@host を出す。複数のマシンを行き来するので、どのマシンの yazi かを見分ける。
+      -- ステータスバー左下のモード表示（NOR）と同じ丸い帯にし、続くカレントディレクトリ（標準の cwd、order 1000）も帯でつなぐ。
+      -- パスの帯の色は theme の mgr.cwd で指定する。
       Header:children_add(function()
-        return ui.Span(ya.user_name() .. "@" .. ya.host_name() .. ":"):fg("blue")
+        local main, sep = th.mode.normal_main, th.status.sep_left
+        return ui.Line {
+          ui.Span(sep.open):fg(main:bg()):bg(App.bg()),
+          ui.Span(" " .. ya.user_name() .. "@" .. ya.host_name() .. " "):style(main),
+          ui.Span(sep.close):fg(main:bg()):bg(th.mgr.cwd:bg()),
+          ui.Span(" "):style(th.mgr.cwd),
+        }
       end, 500, Header.LEFT)
+      Header:children_add(function()
+        return ui.Line {
+          ui.Span(" "):style(th.mgr.cwd),
+          ui.Span(th.status.sep_left.close):fg(th.mgr.cwd:bg()):bg(App.bg()),
+        }
+      end, 1500, Header.LEFT)
 
       -- ステータスバーの左に symlink のリンク先を出す。home-manager が置く設定ファイルは nix store への symlink なので、実体を確かめられる。
       Status:children_add(function(self)
@@ -146,11 +188,11 @@ in
     '';
 
     settings = {
-      # 親の列を残したまま、プレビューを広げる（標準は [ 1, 4, 3 ]）。
+      # 親の列を消し、一覧 3 : プレビュー 7 にする（標準は [ 1, 4, 3 ]）。親へは h で戻れる。
       mgr.ratio = [
+        0
         1
-        3
-        4
+        2
       ];
       plugin = {
         prepend_fetchers = [
