@@ -14,22 +14,22 @@ return {
 
           map('n', ']c', function()
             if vim.wo.diff then return ']c' end
-            vim.schedule(function() gs.next_hunk() end)
+            vim.schedule(function() gs.nav_hunk('next') end)
             return '<Ignore>'
           end, { expr = true })
 
           map('n', '[c', function()
             if vim.wo.diff then return '[c' end
-            vim.schedule(function() gs.prev_hunk() end)
+            vim.schedule(function() gs.nav_hunk('prev') end)
             return '<Ignore>'
           end, { expr = true })
 
+          -- ステージ済みの hunk では stage_hunk がステージを取り消すので、undo_stage_hunk（非推奨）は使わない。
           map('n', '<Space>hs', gs.stage_hunk)
           map('n', '<Space>hr', gs.reset_hunk)
           map('v', '<Space>hs', function() gs.stage_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end)
           map('v', '<Space>hr', function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end)
           map('n', '<Space>hS', gs.stage_buffer)
-          map('n', '<Space>hu', gs.undo_stage_hunk)
           map('n', '<Space>hR', gs.reset_buffer)
           map('n', '<Space>hp', gs.preview_hunk)
           map('n', '<Space>hb', function() gs.blame_line({ full = true }) end)

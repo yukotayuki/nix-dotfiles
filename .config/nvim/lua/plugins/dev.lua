@@ -1,14 +1,18 @@
 return {
   -- nvim-autopairs は completion.lua で nvim-cmp と統合して管理する。
   { 'windwp/nvim-ts-autotag', config = true },
-  { 'JoosepAlviste/nvim-ts-context-commentstring' },
   {
-    'numToStr/Comment.nvim',
-    config = function()
-      require('Comment').setup({
-        pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
-      })
-    end
+    -- コメントは nvim 標準の gc を使い、vue の template と script のように場所で変わるコメント記号をこのプラグインで決める。
+    'JoosepAlviste/nvim-ts-context-commentstring',
+    opts = { enable_autocmd = false },
+    init = function()
+      local get_option = vim.filetype.get_option
+      vim.filetype.get_option = function(filetype, option)
+        return option == 'commentstring'
+          and require('ts_context_commentstring.internal').calculate_commentstring()
+          or get_option(filetype, option)
+      end
+    end,
   },
   { 'kylechui/nvim-surround', version = '*', event = 'VeryLazy', config = true },
   {

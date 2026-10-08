@@ -1,7 +1,5 @@
 local opt = vim.opt
 
-vim.scriptencoding = 'utf-8'
-opt.encoding = 'utf-8'
 opt.termguicolors = true
 opt.laststatus = 3
 opt.belloff = 'all'

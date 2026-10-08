@@ -2,7 +2,7 @@
 -- main はパーサーとクエリのインストールしか行わないので、ハイライトとインデントは FileType で有効にする。
 local parsers = {
   'c', 'vim', 'lua', 'markdown', 'markdown_inline',
-  'javascript', 'typescript', 'tsx', 'toml',
+  'javascript', 'typescript', 'tsx', 'vue', 'toml',
   'json', 'yaml', 'html', 'css',
   'nix', 'bash', 'python', 'go',
   'terraform', 'hcl', 'dockerfile',
