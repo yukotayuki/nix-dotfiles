@@ -102,6 +102,19 @@ in
         ;
     };
 
+    # UI の色は yazi 標準のまま端末の 16 色に任せる。Ghostty（theme = nord）でも nvim（nord.nvim）でも nord で表示され、
+    # 端末側の配色を変えたときにも追従するため。star の多い nord の flavor が無いので flavor は使わない。
+    # コードプレビューのシンタックスハイライトだけは 16 色に従わないため、Nord の公式 Sublime Text テーマの tmTheme を指定する。
+    # 取得元は bat が Nord テーマとして submodule で固定しているリポジトリとコミットに揃える。
+    theme.mgr.syntect_theme = "${
+      pkgs.fetchFromGitHub {
+        owner = "crabique";
+        repo = "Nord-plist";
+        rev = "bf92a9e4457dc2f97efebc59bbeac95933ec6515";
+        hash = "sha256-7aGPOtfugFA/tjVyhO87ymHbbeKmzHRHtlV6nIenzw8=";
+      }
+    }/Nord.tmTheme";
+
     initLua = ''
       require("git"):setup()
       require("full-border"):setup()
