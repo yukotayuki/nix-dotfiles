@@ -59,7 +59,7 @@ nix --extra-experimental-features "nix-command flakes" run github:yukotayuki/nix
 - `setup-kinako`: dotfiles clone → `nix run nix-darwin -- switch --flake .#kinako`
 - `setup-mochi`: dotfiles clone → `home-manager switch` → `brew bundle`
 - `setup-canele`: dotfiles clone → `home-manager switch`
-- `setup-uiro`: dotfiles clone → `sudo nixos-rebuild switch --flake .#uiro`
+- `setup-uiro`: dotfiles clone → `sudo nixos-rebuild switch --impure --flake .#uiro`（`/etc/nixos/hardware-configuration.nix` を読むため `--impure` が要る）
 
 ## 日常的な操作（設定変更後の適用）
 
@@ -74,7 +74,7 @@ hm-switch          # home-manager switch --flake "$DOTDIR#mochi" の短縮形
 nix run home-manager -- switch --flake "$DOTDIR#canele"
 
 # uiro（NixOS）
-sudo nixos-rebuild switch --flake "$DOTDIR#uiro"
+sudo nixos-rebuild switch --impure --flake "$DOTDIR#uiro"
 ```
 
 Nix のファイル（`*.nix`、`flake.nix`、`flake.lock`）を変更した場合は、PR を作る前に必ず対象マシンで switch して動作を確認する。

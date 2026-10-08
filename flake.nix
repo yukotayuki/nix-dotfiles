@@ -126,11 +126,6 @@
             ./hosts/uiro/configuration.nix
           ];
         };
-        nix-gaming = mkNixOSConfig {
-          extraModules = [
-            ./hosts/gaming/configuration.nix
-          ];
-        };
       };
 
       darwinConfigurations = {
@@ -222,7 +217,7 @@
                   ${git} clone "git@github.com:yukotayuki/nix-dotfiles.git" "$DOTFILES_DIR" 2>/dev/null \
                     || ${git} clone "https://github.com/yukotayuki/nix-dotfiles" "$DOTFILES_DIR"
                 fi
-                sudo nixos-rebuild switch --flake "$DOTFILES_DIR#uiro"
+                sudo nixos-rebuild switch --impure --flake "$DOTFILES_DIR#uiro"
               ''}";
             };
           };

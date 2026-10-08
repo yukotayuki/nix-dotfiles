@@ -86,7 +86,7 @@ nix --extra-experimental-features "nix-command flakes" \
   run github:yukotayuki/nix-dotfiles#setup-uiro
 ```
 
-setup-uiro は、dotfiles を `~/dotfiles` に clone してから `sudo nixos-rebuild switch --flake ~/dotfiles#uiro` を実行する。
+setup-uiro は、dotfiles を `~/dotfiles` に clone してから `sudo nixos-rebuild switch --impure --flake ~/dotfiles#uiro` を実行する。uiro の構成は `/etc/nixos/hardware-configuration.nix` を読むため、`--impure` が要る。
 
 > どのマシンの setup も、`~/dotfiles` がなければ SSH で clone し、SSH で clone できなければ HTTPS で clone する。
 > HTTPS で clone した場合は、あとから `git remote set-url origin git@github.com:yukotayuki/nix-dotfiles.git` で SSH に切り替えられる。
@@ -117,5 +117,5 @@ hm-switch          # home-manager switch --flake "$DOTDIR#mochi" の短縮形
 nix run home-manager -- switch --flake "$DOTDIR#canele"
 
 # uiro（NixOS）
-sudo nixos-rebuild switch --flake "$DOTDIR#uiro"
+sudo nixos-rebuild switch --impure --flake "$DOTDIR#uiro"
 ```
