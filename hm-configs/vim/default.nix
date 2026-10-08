@@ -29,6 +29,8 @@ in
       #   mason に任せると LSP の追加・更新のたびに darwin-rebuild が不要になる。
       #   更新頻度の高い LSP サーバーは mason 管理の方がコストが低い。
       nodejs
+      # tree-sitter: nvim-treesitter（main ブランチ）がパーサーをビルドするために必要（0.26.1 以上）。
+      tree-sitter
     ]
     ++ lib.lists.optionals isLinux [
       xclip
