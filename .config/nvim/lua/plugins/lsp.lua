@@ -1,6 +1,6 @@
 return {
   {
-    'williamboman/mason.nvim',
+    'mason-org/mason.nvim',
     config = function()
       require('mason').setup()
       -- shfmt は LSP サーバーではないので mason-lspconfig ではなく MasonInstall で入れる。conform.lua の sh フォーマッタが使う。
@@ -11,11 +11,10 @@ return {
     end
   },
   {
-    'williamboman/mason-lspconfig.nvim',
+    'mason-org/mason-lspconfig.nvim',
     dependencies = {
-      'williamboman/mason.nvim',
+      'mason-org/mason.nvim',
       'neovim/nvim-lspconfig',
-      'hrsh7th/nvim-cmp',
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
@@ -57,7 +56,6 @@ return {
 
       require('mason-lspconfig').setup({
         ensure_installed = { 'lua_ls', 'ts_ls' },
-        automatic_installation = true,
       })
     end,
   },
@@ -66,10 +64,10 @@ return {
     init = function()
       vim.diagnostic.config({
         virtual_text = {
-          source = 'always',
+          source = true,
         },
         float = {
-          source = 'always',
+          source = true,
         },
       })
     end,
@@ -80,9 +78,6 @@ return {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons',
     },
-    config = function()
-      require('lspsaga').setup({})
-    end,
     opts = {
       lightbulb = {
         enable = false,
@@ -95,7 +90,8 @@ return {
       return {
         { 'K',  '<Cmd>Lspsaga hover_doc<CR>' },
         { ',c', '<Cmd>Lspsaga code_action<CR>',          mode = { 'n', 'v' } },
-        { 'gr', '<Cmd>Lspsaga rename<CR>' },
+        -- nvim 標準の grn（rename）を lspsaga の rename で上書きする。gr だと標準の grn / gra などと前方一致で衝突する。
+        { 'grn', '<Cmd>Lspsaga rename<CR>' },
         { 'gd', '<Cmd>Lspsaga goto_definition<CR>' },
         { 'gD', '<Cmd>Lspsaga peek_definition<CR>' },
         { 'gt', '<Cmd>Lspsaga goto_type_definition<CR>' },
