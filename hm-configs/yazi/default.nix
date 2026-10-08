@@ -93,8 +93,11 @@ in
     # q で終了したときだけ cwd を移す。Q で終了した場合は移動しない（yazi 標準の動作）。
     shellWrapperName = "y";
     # nixpkgs の yazi ラッパーは poppler / ffmpeg / imagemagick / jq / fd / rg / fzf / zoxide を同梱しているため、
-    # ここでは ouch.yazi が呼ぶ ouch 本体だけを足す。
-    extraPackages = [ pkgs.ouch ];
+    # ここでは ouch.yazi が呼ぶ ouch 本体と、I で Markdown を整形して開く glow だけを足す。
+    extraPackages = with pkgs; [
+      ouch
+      glow
+    ];
 
     plugins = {
       inherit (pkgs.yaziPlugins)
@@ -102,6 +105,9 @@ in
         smart-enter
         full-border
         ouch
+        vcs-files
+        githead
+        diff
         ;
     };
 
@@ -146,6 +152,30 @@ in
     initLua = ''
       require("git"):setup()
       require("full-border"):setup()
+      -- ヘッダーのパスの帯の右（order 2000）に、git のブランチと変更状況を出す。
+      require("githead"):setup()
+
+      -- 親の列を消した 2 列表示（ratio[1] == 0）のまま、境界線のドラッグで一覧とプレビューの幅を変えられるようにする。
+      -- 標準の Rail:drag は親の列の幅を最低 1 にするため、ドラッグすると幅 1 の親の列が現れて 3 列になり、表示が崩れる。
+      local rail_drag = Rail.drag
+      function Rail:drag(event)
+        if rt.mgr.ratio[1] ~= 0 or event.type ~= "legacy" then
+          return rail_drag(self, event)
+        end
+        -- 一覧の左端の線（rail-left）は、2 列表示では動かさない。
+        if self._id ~= "rail-right" then
+          return
+        end
+        local c = self._chunks
+        local x = math.max(event.x, c[2].x + 2)
+        local preview = math.max(1, c[3].right - x)
+        local current = math.max(1, c[2].w + c[3].w - preview)
+        local r = rt.mgr.ratio
+        if r[2] ~= current or r[3] ~= preview then
+          rt.mgr.ratio = { 0, current, preview }
+          ui.render()
+        end
+      end
 
       -- ヘッダーの左に user@host を出す。複数のマシンを行き来するので、どのマシンの yazi かを見分ける。
       -- ステータスバー左下のモード表示（NOR）と同じ丸い帯にし、続くカレントディレクトリ（標準の cwd、order 1000）も帯でつなぐ。
@@ -224,6 +254,40 @@ in
 
     keymap = {
       mgr.prepend_keymap = [
+        # キーは yazi 標準・yazi.nvim・既存の割り当てと重ならないものを選ぶ。README の例の g c（標準の ~/.config へ移動）と
+        # <C-d>（標準の半ページ下へ）はぶつかるため使わない。
+        {
+          # カーソル位置のファイルを bat（gruvbox-dark）で開き、less のキー（Emacs 風の移動や / の検索）で読む。
+          # キーは ranger の「ページャーで開く」に合わせて i にする。
+          # bat 標準の less は 1 画面に収まると即終了して一瞬で戻るため、less を明示する。
+          # less は標準では画面を下から描き、短いファイルが下に寄るため、-c で上から描かせる。ディレクトリでは何もしない。
+          on = "i";
+          run = "shell --block -- if [ -f %h ]; then bat --paging=always --pager 'less -Rc' %h; fi";
+          desc = "Open the hovered file in bat with less";
+        }
+        {
+          # Markdown は I で glow に整形させて less で開く。i（bat のテキスト表示）と押し分ける。
+          # glow 標準のスタイルには gruvbox が無いため、glamour の dark スタイルの色を
+          # コードプレビューと同じ gruvbox-dark.tmTheme の Markdown 用の色に置き換えたスタイルを渡す。
+          # コードブロックの中は glamour が使う chroma の gruvbox スタイルに任せる。Markdown 以外では何もしない。
+          # glow 標準のページャー（less -r）も短いファイルが下に寄るため、PAGER で -c を付ける。
+          on = "I";
+          run = "shell --block -- case %h in *.md|*.markdown) PAGER='less -Rc' glow -p -s=${./glamour-gruvbox.json} %h ;; esac";
+          desc = "Open the hovered Markdown rendered by glow with less";
+        }
+        {
+          on = [
+            "g"
+            "s"
+          ];
+          run = "plugin vcs-files";
+          desc = "Show Git file changes";
+        }
+        {
+          on = "C";
+          run = "plugin diff";
+          desc = "Diff the selected with the hovered file";
+        }
         {
           on = "l";
           run = "plugin smart-enter";
