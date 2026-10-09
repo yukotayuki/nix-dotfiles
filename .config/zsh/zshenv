@@ -1,6 +1,12 @@
 export DOTDIR=$HOME/dotfiles
 export ZHOMEDIR=$DOTDIR/.config/zsh
 
+# herdr や tmux のサーバーは起動時の環境を持ち続けるため、新しいペインに古い SSH_AUTH_SOCK を渡すことがある。
+# 指す先がソケットでないときだけ、macOS 標準の ssh-agent（launchd）に戻す。
+if [[ "$OSTYPE" == darwin* && ! -S "$SSH_AUTH_SOCK" ]]; then
+    export SSH_AUTH_SOCK="$(launchctl getenv SSH_AUTH_SOCK)"
+fi
+
 # Rancher Desktop の CLI ツール（docker, nerdctl, helm 等）
 export PATH="$HOME/.rd/bin:$PATH"
 
