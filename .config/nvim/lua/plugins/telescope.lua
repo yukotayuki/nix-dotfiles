@@ -1,23 +1,13 @@
 return {
   {
     'nvim-telescope/telescope.nvim',
-    branch = '0.1.x',
+    version = '*',
     dependencies = { 'nvim-lua/plenary.nvim' },
-    opts = {
-      defaults = {
-        -- nvim-treesitter の新バージョンで削除された parsers.ft_to_lang を previewer が呼び出してクラッシュするため無効にする。
-        -- vim の組み込みシンタックスで代替できるため影響は軽微。
-        preview = { treesitter = false },
-      },
+    keys = {
+      { '<Space>ff', function() require('telescope.builtin').find_files() end },
+      { '<Space>fg', function() require('telescope.builtin').live_grep() end },
+      { '<Space>fb', function() require('telescope.builtin').buffers() end },
+      { '<Space>fh', function() require('telescope.builtin').help_tags() end },
     },
-    keys = function()
-      local builtin = require('telescope.builtin')
-      return {
-        { '<Space>ff', builtin.find_files },
-        { '<Space>fg', builtin.live_grep },
-        { '<Space>fb', builtin.buffers },
-        { '<Space>fh', builtin.help_tags },
-      }
-    end
   }
 }
