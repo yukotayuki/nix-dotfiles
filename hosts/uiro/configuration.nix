@@ -5,6 +5,7 @@
 
 {
   imports = [
+    # 絶対パスなので、評価には --impure が要る。
     /etc/nixos/hardware-configuration.nix
     # ./virtualbox_host.nix
   ];
@@ -57,35 +58,32 @@
     extraGroups = [
       "networkmanager"
       "wheel"
-      "adbusers"
     ];
     packages = with pkgs; [
       firefox
       microsoft-edge
-      skypeforlinux
       nix-index
-      yubioath-desktop
+      yubioath-flutter
     ];
   };
 
   environment.systemPackages = with pkgs; [
-    xfce.xfce4-whiskermenu-plugin
-    xfce.xfce4-pulseaudio-plugin
-    xfce.xfce4-panel-profiles
+    xfce4-whiskermenu-plugin
+    xfce4-pulseaudio-plugin
+    xfce4-panel-profiles
     pavucontrol
     arc-icon-theme
-    gtk-engine-murrine
-    gtk_engines
     sassc
     conky
     killall
+    android-tools
   ];
 
   fonts = {
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk-sans
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       ipafont
     ];
 
@@ -117,7 +115,7 @@
 
   services.printing.enable = true;
 
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -148,10 +146,6 @@
     enable = true;
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
-  };
-
-  programs.adb = {
-    enable = true;
   };
 
   system.stateVersion = "22.05";
