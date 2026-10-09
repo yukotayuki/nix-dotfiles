@@ -1,5 +1,8 @@
 { pkgs, config, ... }:
 
+let
+  inherit (import ../../vars.nix) username;
+in
 {
   networking = {
     computerName = config.hostSpec.name;
@@ -10,7 +13,7 @@
   environment.shells = [ pkgs.zsh ];
 
   # homebrew.enable など一部のオプションはプライマリユーザーが必要。
-  system.primaryUser = "joo";
+  system.primaryUser = username;
 
   system = {
     defaults = {
@@ -32,7 +35,7 @@
 
   # Determinate Nix の nix.conf は nix.conf.d/ を読まず、`!include nix.custom.conf` がユーザー設定の差し込み口になっている。
   environment.etc."nix/nix.custom.conf".text = ''
-    extra-trusted-users = joo
+    extra-trusted-users = ${username}
   '';
 
   programs.zsh.enable = true;

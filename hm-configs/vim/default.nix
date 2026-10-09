@@ -6,9 +6,14 @@
 }:
 
 let
-  inherit (pkgs.stdenv) isLinux;
-  settings = {
+  inherit (pkgs.stdenv.hostPlatform) isLinux;
+in
+{
+  programs.neovim = {
     enable = true;
+    # Ruby / Python の provider を使うプラグインは無いため無効にする。
+    withRuby = false;
+    withPython3 = false;
     # extraLuaConfig は home-manager 生成の init.lua にコードを注入するが、lazy.nvim のブートストラップは自分が唯一のエントリポイントであることを前提とする。
     # luafile で呼び出せば init.lua が nix なしでも単独で動作する。
     extraConfig = ''
@@ -17,8 +22,7 @@ let
       luafile ${dotDir}/.config/nvim/init.lua
     '';
   };
-in
-{
+
   home.packages =
     with pkgs;
     [
@@ -32,7 +36,4 @@ in
       xclip
     ];
   # general.lua の clipboard=unnamed で macOS では pbcopy/pbpaste が直接使われるため、reattach-to-user-namespace は不要。
-
-  programs.neovim = settings;
-  programs.vim = lib.mkIf isLinux settings;
 }

@@ -7,7 +7,7 @@
 }:
 
 let
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
   mkLink = path: config.lib.file.mkOutOfStoreSymlink "${dotDir}/${path}";
 in
 lib.mkIf isDarwin {

@@ -6,7 +6,7 @@
 }:
 
 let
-  inherit (pkgs.stdenv) isLinux;
+  inherit (pkgs.stdenv.hostPlatform) isLinux isDarwin;
 
 in
 {
@@ -23,15 +23,19 @@ in
     [
       unzip
       hyperfine
-      fzf
-      gh
       rsync
       minicom
-      nixfmt-rfc-style
+      nixfmt
       smartmontools
     ]
     ++ lib.lists.optionals isLinux [
       binutils
+    ]
+    ++ lib.lists.optionals isDarwin [
+      deno
+      kubectl
+      nim
+      shellcheck
     ]
     ++ lib.lists.optionals isNixOS [
       gcc
