@@ -10,20 +10,27 @@ source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light chrissicool/zsh-256color
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 
-# fpath
-if type brew &>/dev/null; then
-    fpath=($(brew --prefix)/share/zsh-completions $fpath)
-fi
+typeset -U path fpath
+[[ -d ${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh-completions ]] && fpath=(${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh-completions $fpath)
 
 autoload -Uz compinit && compinit -u
 
-# completions
-if type kubectl &>/dev/null; then eval "$(kubectl completion zsh)"; fi
+# kubectl completion zsh は毎回 30ms ほどかかるため、kubectl の実体が変わったときだけ作り直す。
+# nix store のファイルは更新日時が 1970 年で比べられないので、実体のパスで判定する。
+if (( $+commands[kubectl] )); then
+    _kubectl_comp=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/kubectl-completion.zsh
+    _kubectl_bin=${commands[kubectl]:A}
+    [[ -s $_kubectl_comp ]] && read -r _kubectl_head < $_kubectl_comp
+    if [[ "$_kubectl_head" != "# $_kubectl_bin" ]]; then
+        mkdir -p ${_kubectl_comp:h}
+        { print -r -- "# $_kubectl_bin"; kubectl completion zsh } >| $_kubectl_comp
+    fi
+    source $_kubectl_comp
+    unset _kubectl_comp _kubectl_bin _kubectl_head
+fi
 
 # direnv: home-manager の programs.direnv.enable で管理するため手動 hook は不要。
 # zoxide: home-manager の programs.zoxide.enable で管理するため手動 hook は不要。
@@ -49,3 +56,6 @@ if [[ -n "$GHOSTTY_RESOURCES_DIR" && -z "$TMUX" && -z "$HERDR_ENV" ]]; then
         exec tmux new-session -A -s main
     fi
 fi
+
+# zsh-syntax-highlighting は、後から定義した widget もハイライトの対象にするため最後に読み込む（公式の指示）。
+zinit light zsh-users/zsh-syntax-highlighting

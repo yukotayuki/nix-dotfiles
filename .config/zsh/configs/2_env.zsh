@@ -6,11 +6,12 @@ export PATH="$HOME/.local/bin:$PATH"
 export HISTFILE=~/.histfile
 export HISTSIZE=100000
 export SAVEHIST=100000
-export DIRSTACK_SIZE=100
 
 # Homebrew (Apple Silicon)
 if [ "$(uname -m)" = "arm64" ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    # brew shellenv は PATH の先頭に足すため、Nix で入れたコマンドが Homebrew 版に隠れないよう末尾へ回す。
+    path=(${path:#/opt/homebrew/*} /opt/homebrew/bin /opt/homebrew/sbin)
 fi
 
 # Linux distro detection
@@ -38,6 +39,3 @@ export FZF_CTRL_T_OPTS="
   --preview 'bat -n --color=always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
-
-# claude code default model
-export ANTHROPIC_MODEL="claude-sonnet-4-6"

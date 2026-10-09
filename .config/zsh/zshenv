@@ -1,9 +1,11 @@
 export DOTDIR=$HOME/dotfiles
 export ZHOMEDIR=$DOTDIR/.config/zsh
 
-# macOS 標準の ssh-agent は FIDO2 非対応のため、launchd が起動する nix openssh の ssh-agent に差し替える。
-# Linux では services.ssh-agent (systemd user service) が SSH_AUTH_SOCK を設定するため上書きしない。
-[[ "$OSTYPE" == "darwin"* ]] && export SSH_AUTH_SOCK="$HOME/.ssh/agent.socket"
+# herdr や tmux のサーバーは起動時の環境を持ち続けるため、新しいペインに古い SSH_AUTH_SOCK を渡すことがある。
+# 指す先がソケットでないときだけ、macOS 標準の ssh-agent（launchd）に戻す。
+if [[ "$OSTYPE" == darwin* && ! -S "$SSH_AUTH_SOCK" ]]; then
+    export SSH_AUTH_SOCK="$(launchctl getenv SSH_AUTH_SOCK)"
+fi
 
 # Rancher Desktop の CLI ツール（docker, nerdctl, helm 等）
 export PATH="$HOME/.rd/bin:$PATH"
