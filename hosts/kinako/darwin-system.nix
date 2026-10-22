@@ -38,5 +38,11 @@ in
     extra-trusted-users = ${username}
   '';
 
+  # Nix が生成する CA バンドル（/etc/ssl/certs/ca-certificates.crt）から除外する。macOS のキーチェーンには影響しない。
+  security.pki.caCertificateBlacklist = [
+    "Comodo AAA Services root"
+    "emSign ECC Root CA - G3"
+  ];
+
   programs.zsh.enable = true;
 }
