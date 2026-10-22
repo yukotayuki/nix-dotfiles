@@ -32,7 +32,6 @@ in
       binutils
     ]
     ++ lib.lists.optionals isDarwin [
-      deno
       kubectl
       nim
       shellcheck
